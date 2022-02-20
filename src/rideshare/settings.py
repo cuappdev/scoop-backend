@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework.authtoken",
+    "person",
 ]
 
 MIDDLEWARE = [
@@ -70,6 +72,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "rideshare.wsgi.application"
 
+# Needed to test in Postman
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAdminUser"),
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
