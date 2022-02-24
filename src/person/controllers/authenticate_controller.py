@@ -27,6 +27,7 @@ class AuthenticateController:
             return None, status.HTTP_403_FORBIDDEN
 
     def create_access_token(self, user):
+        """Creates or retrieves current access token for user. If expired, then create new access token."""
         token, _ = Token.objects.get_or_create(user=user)
         elapsed_seconds = (timezone.now() - token.created).total_seconds()
         if api_settings.ACCESS_TOKEN_AGE <= elapsed_seconds:
@@ -34,17 +35,18 @@ class AuthenticateController:
             token = Token.objects.create(user=user)
         return token.key
 
-    def _create_user(self, user_data):
+    def create_user(self, user_data):
         """Creates new user (Django auth) from user_data"""
         return User.objects._create_user(**user_data)
 
-    def _create_person(self, person_data):
-        """Creates new Person object from user_data"""
+    def create_person(self, person_data):
+        """Creates new Person object from person_data"""
         person = Person(**person_data)
         person.save()
         return person
 
-    def _create_token_info(self, token_info):
+    def create_token_info(self, token_info):
+        """Create token info"""
         username = token_info.get("email")
         google_user_id = token_info.get("sub")
         password = api_settings.AUTH_PASSWORD_SALT + google_user_id
@@ -53,16 +55,15 @@ class AuthenticateController:
         netid = token_info.get("email").split("@")[0]
         return netid, username, password, first_name, last_name
 
-    def _get_token_info(self, token):
+    def get_token_info(self, token):
         """Returns token information if `token` is valid. If in `DEBUG` mode, returns the request data."""
-        if not api_settings.GOOGLE_DEBUG:
-            try:
-                return id_token.verify_oauth2_token(token, requests.Request())
-            except ValueError:
-                return None
-        return self._data
+        try:
+            return id_token.verify_oauth2_token(token, requests.Request())
+        except ValueError:
+            return None
 
-    def _login(self, token_info):
+    def login(self, token_info):
+        """Logs user in given token_info. If user does not exist, registers new one."""
         netid, username, password, _, _ = self._create_token_info(token_info)
         person_exists = Person.objects.filter(netid=netid)
         if not person_exists:
@@ -75,23 +76,23 @@ class AuthenticateController:
 
     def process(self):
         """Returns the current access token or a new one if expired. If the user isn't authenticated yet,
-        logs an existing user in or registers a new one."""
+        logs existing user in or registers a new one."""
         user = self._request.user
         status_code = status.HTTP_200_OK
         if self._data.get("username") and self._data.get("password"):
-            user, status_code = self._authenticate(
+            user, status_code = self.authenticate(
                 self._data.get("username"), self._data.get("password")
             )
             if user is None:
                 return failure_response("Bad credentials provided.", status=status_code)
         elif not user.is_authenticated:
             token = self._data.get("id_token")
-            token_info = self._get_token_info(token)
+            token_info = self.get_token_info(token)
             if token_info is None:
                 return failure_response(
                     "ID Token is not valid.", status.HTTP_401_UNAUTHORIZED
                 )
-            user, status_code = self._login(token_info)
+            user, status_code = self.login(token_info)
             if user is None:
                 return failure_response("ID Token is not valid.", status=status_code)
         access_token = self.create_access_token(user)
@@ -101,7 +102,8 @@ class AuthenticateController:
         )
 
     def register(self, token_info):
-        (netid, username, password, first_name, last_name) = self._create_token_info(
+        """Registers new account given token_info"""
+        (netid, username, password, first_name, last_name) = self.create_token_info(
             token_info
         )
         user_data = {
@@ -111,6 +113,6 @@ class AuthenticateController:
             "first_name": first_name,
             "last_name": last_name,
         }
-        user = self._create_user(user_data)
+        user = self.create_user(user_data)
         person_data = {"user": user, "netid": netid}
-        self._create_person(person_data)
+        self.create_person(person_data)

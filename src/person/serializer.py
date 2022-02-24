@@ -21,9 +21,9 @@ class AuthenticateSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     netid = serializers.CharField(source="person.netid")
-    grade = serializers.CharField(source="person.graduation_year")
+    grade = serializers.CharField(source="person.grade")
     pronouns = serializers.CharField(source="person.pronouns")
-    phone_number = serializers.CharField(source="person.has_onboarded")
+    phone_number = serializers.CharField(source="person.phone_number")
 
     class Meta:
         model = User
