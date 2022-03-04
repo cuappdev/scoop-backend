@@ -24,7 +24,7 @@ class TestAuthenticate(TestCase):
         last_name=LAST_NAME,
         email=EMAIL,
     ):
-        """Returns the auth token."""
+        """Checks if user is successfully created and auth token is returned."""
         data = {
             "sub": "googleID",
             "given_name": first_name,

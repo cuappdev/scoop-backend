@@ -35,17 +35,17 @@ class AuthenticateController:
         return token.key
 
     def create_user(self, user_data):
-        """Creates new user (Django auth) from `user_data`"""
+        """Creates new user (Django auth) from `user_data.`"""
         return User.objects.create_user(**user_data)
 
     def create_person(self, person_data):
-        """Creates new Person object from `person_data`"""
+        """Creates new Person object from `person_data.`"""
         person = Person(**person_data)
         person.save()
         return person
 
     def create_token_info(self, token_info):
-        """Create token info for app based on Google `token_info`"""
+        """Create token info for app based on Google `token_info.`"""
         username = token_info.get("email")
         google_user_id = token_info.get("sub")
         password = api_settings.AUTH_PASSWORD_SALT + google_user_id
@@ -103,7 +103,7 @@ class AuthenticateController:
         )
 
     def register(self, token_info):
-        """Registers new account given `token_info`"""
+        """Registers new account given `token_info.`"""
         (netid, username, password, first_name, last_name) = self.create_token_info(
             token_info
         )
