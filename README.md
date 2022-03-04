@@ -1,4 +1,4 @@
-# Ridehare Backend
+# Scoop Backend
 An open-source backend for an app helping students find rides on campus.
 
 ## Installation
