@@ -15,7 +15,7 @@ class AuthenticateSerializer(serializers.ModelSerializer):
         )
         read_only_fields = fields
 
-    def get_access_token(self):
+    def get_access_token(self, instance):
         return self.context.get("access_token")
 
 
