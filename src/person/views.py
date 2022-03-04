@@ -35,23 +35,4 @@ class MeView(generics.GenericAPIView):
             self.serializer_class(request.user).data, status.HTTP_200_OK
         )
 
-
-class DeveloperView(generics.GenericAPIView):
-    serializer_class = AuthenticateSerializer
-    permission_classes = api_settings.ADMIN_PERMISSIONS
-
-    def get(self, request):
-        """Get all users"""
-        people = User.objects.all()
-        result = []
-        for person in people:
-            result.append(UserSerializer(person).data)
-        return success_response(result, status.HTTP_200_OK)
-
-    def post(self, request):
-        """Create test user or return access token for test user if user_id is provided"""
-        try:
-            data = json.loads(request.body)
-        except json.JSONDecodeError:
-            data = request.data
-        return DeveloperController(request, data, self.serializer_class).process()
+    
