@@ -60,6 +60,7 @@ class DeveloperView(generics.GenericAPIView):
         """Create test user or return access token for test user if `id` is provided."""
         try:
             data = json.loads(request.body)
+            id = request.query_params.get("id", None)
         except json.JSONDecodeError:
             data = request.data
-        return DeveloperController(request, data, self.serializer_class).process()
+        return DeveloperController(request, data, self.serializer_class, id).process()

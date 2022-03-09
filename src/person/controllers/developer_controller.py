@@ -9,26 +9,26 @@ from rest_framework.authtoken.models import Token
 
 
 class DeveloperController:
-    def __init__(self, request, data, serializer):
+    def __init__(self, request, data, serializer, id):
         self._request = request
         self._data = data
         self._serializer = serializer
+        self._user_id = id
 
     def create_person(self, person_data):
-        """Creates new Person object from `person_data.`"""
+        """Creates new Person object from `person_data`."""
         person = Person(**person_data)
         person.save()
         return person
 
     def create_user(self, user_data):
-        """Creates new user (Django auth) from `user_data.`"""
+        """Creates new user (Django auth) from `user_data`."""
         return User.objects._create_user(**user_data)
 
     def process(self):
         """Creates new user and person if user_id not provided in body. Otherwise, return access token for valid user."""
         status_code = status.HTTP_200_OK
-        user_id = self._request.GET.get("id")
-        if user_id is None:
+        if self._user_id is None:
             user_data = {
                 "username": self._data.get("username"),
                 "email": self._data.get("username"),
@@ -41,9 +41,9 @@ class DeveloperController:
             self.create_person(person_data)
             status_code = status.HTTP_201_CREATED
         else:
-            if User.objects.filter(id=int(user_id)).exists() is False:
+            if not User.objects.filter(id=int(self._user_id)).exists():
                 return failure_response("User does not exist")
-            user = User.objects.filter(id=int(user_id)).first()
+            user = User.objects.get(id=int(self._user_id))
         access_token, _ = Token.objects.get_or_create(user=user)
         return success_response(
             self._serializer(user, context={"access_token": access_token.key}).data,
