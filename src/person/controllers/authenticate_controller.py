@@ -35,17 +35,17 @@ class AuthenticateController:
         return token.key
 
     def create_user(self, user_data):
-        """Creates new user (Django auth) from `user_data`"""
-        return User.objects._create_user(**user_data)
+        """Creates new user (Django auth) from `user_data`."""
+        return User.objects.create_user(**user_data)
 
     def create_person(self, person_data):
-        """Creates new Person object from `person_data`"""
+        """Creates new Person object from `person_data`."""
         person = Person(**person_data)
         person.save()
         return person
 
     def create_token_info(self, token_info):
-        """Create token info for app based on Google `token_info`"""
+        """Create token info for app based on Google `token_info`."""
         username = token_info.get("email")
         google_user_id = token_info.get("sub")
         password = api_settings.AUTH_PASSWORD_SALT + google_user_id
@@ -55,16 +55,18 @@ class AuthenticateController:
         return netid, username, password, first_name, last_name
 
     def get_token_info(self, token):
-        """Returns token information if `token` is valid. If in `DEBUG` mode, returns the request data."""
-        try:
-            return id_token.verify_oauth2_token(token, requests.Request())
-        except ValueError:
-            return None
+        """Returns token information if `token` is valid."""
+        if not api_settings.GOOGLE_DEBUG:
+            try:
+                return id_token.verify_oauth2_token(token, requests.Request())
+            except ValueError:
+                return None
+        return self._data
 
     def login(self, token_info):
         """Logs user in given `token_info`. If user does not exist, registers new one."""
-        netid, username, password, _, _ = self._create_token_info(token_info)
-        person_exists = Person.objects.filter(netid=netid)
+        netid, username, password, _, _ = self.create_token_info(token_info)
+        person_exists = Person.objects.filter(netid=netid).exists()
         if not person_exists:
             self.register(token_info)
         user, auth_status = self.authenticate(username, password)
@@ -101,7 +103,7 @@ class AuthenticateController:
         )
 
     def register(self, token_info):
-        """Registers new account given `token_info`"""
+        """Registers new account given `token_info`."""
         (netid, username, password, first_name, last_name) = self.create_token_info(
             token_info
         )
