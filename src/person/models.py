@@ -9,4 +9,5 @@ class Person(models.Model):
         User, on_delete=models.CASCADE, unique=True, default=None
     )
     grade = models.CharField(max_length=20, default=None, null=True)
+    profile_pic_url = models.TextField(default=None, null=True)
     pronouns = models.CharField(max_length=20, default=None, null=True)
