@@ -11,11 +11,11 @@ def upload_profile_pic(user_id, profile_pic_base64):
         "bucket": IMAGE_BUCKET_NAME,
         "image": profile_pic_base64,
     }
-    response = requests.post(IMAGE_UPLOAD_URL, json=request_body).json()
-    if not response.get("success"):
+    response = requests.post(IMAGE_UPLOAD_URL, json=request_body)
+    if response.status_code != 201:
         return failure_response("Image upload not successful.")
     user = User.objects.get(id=user_id)
     person = user.person
-    person.profile_pic_url = response.get("data")
+    person.profile_pic_url = response.json().get("data")
     user.save()
     person.save()

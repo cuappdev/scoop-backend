@@ -28,11 +28,12 @@ class UpdatePersonController:
         update(self._person, "phone_number", phone_number)
         update(self._person, "pronouns", pronouns)
 
+        self._user.save()
+        self._person.save()
+
         if profile_pic_base64 is not None:
             upload_profile_pic(self._user.id, profile_pic_base64)
             self._user = User.objects.get(id=self._user.id)
             return success_response(self._serializer(self._user).data)
 
-        self._user.save()
-        self._person.save()
         return success_response(self._serializer(self._user).data)
