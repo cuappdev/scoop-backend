@@ -1,5 +1,8 @@
 from api.utils import success_response
 from api.utils import update
+from django.contrib.auth.models import User
+
+from ..utils import upload_profile_pic
 
 
 class UpdatePersonController:
@@ -15,6 +18,7 @@ class UpdatePersonController:
         last_name = self._data.get("last_name")
         grade = self._data.get("grade")
         phone_number = self._data.get("phone_number")
+        profile_pic_base64 = self._data.get("profile_pic_base64")
         pronouns = self._data.get("pronouns")
 
         update(self._person, "netid", netid)
@@ -23,6 +27,13 @@ class UpdatePersonController:
         update(self._person, "grade", grade)
         update(self._person, "phone_number", phone_number)
         update(self._person, "pronouns", pronouns)
+
         self._user.save()
         self._person.save()
+
+        if profile_pic_base64 is not None:
+            upload_profile_pic(self._user.id, profile_pic_base64)
+            self._user = User.objects.get(id=self._user.id)
+            return success_response(self._serializer(self._user).data)
+
         return success_response(self._serializer(self._user).data)
