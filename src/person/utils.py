@@ -15,6 +15,8 @@ def upload_profile_pic(user_id, profile_pic_base64):
         return
     user = User.objects.get(id=user_id)
     person = user.person
+    if person.profile_pic_url:
+        remove_profile_pic(user_id)
     person.profile_pic_url = response.json().get("data")
     user.save()
     person.save()
