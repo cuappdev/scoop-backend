@@ -2,6 +2,7 @@ from api.utils import success_response
 from api.utils import update
 from django.contrib.auth.models import User
 
+from ..utils import remove_profile_pic
 from ..utils import upload_profile_pic
 
 
@@ -31,7 +32,11 @@ class UpdatePersonController:
         self._user.save()
         self._person.save()
 
-        if profile_pic_base64 is not None:
+        if profile_pic_base64 == "":
+            remove_profile_pic(self._user.id)
+            self._user = User.objects.get(id=self._user.id)
+            return success_response(self._serializer(self._user).data)
+        elif profile_pic_base64 is not None:
             upload_profile_pic(self._user.id, profile_pic_base64)
             self._user = User.objects.get(id=self._user.id)
             return success_response(self._serializer(self._user).data)
