@@ -34,11 +34,8 @@ class UpdatePersonController:
 
         if profile_pic_base64 == "":
             remove_profile_pic(self._user.id)
-            self._user = User.objects.get(id=self._user.id)
-            return success_response(self._serializer(self._user).data)
         elif profile_pic_base64 is not None:
             upload_profile_pic(self._user.id, profile_pic_base64)
-            self._user = User.objects.get(id=self._user.id)
-            return success_response(self._serializer(self._user).data)
 
+        self._user = User.objects.get(id=self._user.id)
         return success_response(self._serializer(self._user).data)

@@ -15,6 +15,7 @@ def upload_profile_pic(user_id, profile_pic_base64):
         return
     user = User.objects.get(id=user_id)
     person = user.person
+    # if there is already a profile picture, delete old one to free up space on server
     if person.profile_pic_url:
         remove_profile_pic(user_id)
     person.profile_pic_url = response.json().get("data")
