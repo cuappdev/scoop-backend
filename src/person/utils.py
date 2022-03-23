@@ -1,6 +1,5 @@
 from api.settings import IMAGE_BUCKET_NAME
 from api.settings import IMAGE_UPLOAD_URL
-from api.utils import failure_response
 from django.contrib.auth.models import User
 import requests
 
@@ -11,11 +10,27 @@ def upload_profile_pic(user_id, profile_pic_base64):
         "bucket": IMAGE_BUCKET_NAME,
         "image": profile_pic_base64,
     }
-    response = requests.post(IMAGE_UPLOAD_URL, json=request_body)
+    response = requests.post(IMAGE_UPLOAD_URL + "upload/", json=request_body)
     if response.status_code != 201:
-        return failure_response("Image upload not successful.")
+        return
     user = User.objects.get(id=user_id)
     person = user.person
+    # if there is already a profile picture, delete old one to free up space on server
+    if person.profile_pic_url:
+        remove_profile_pic(user_id)
     person.profile_pic_url = response.json().get("data")
+    user.save()
+    person.save()
+
+
+def remove_profile_pic(user_id):
+    """Removes image from server and modifies user's profile_pic_url"""
+    user = User.objects.get(id=user_id)
+    person = user.person
+    request_body = {"bucket": IMAGE_BUCKET_NAME, "image_url": person.profile_pic_url}
+    response = requests.post(IMAGE_UPLOAD_URL + "remove/", json=request_body)
+    if response.status_code != 200:
+        return
+    person.profile_pic_url = ""
     user.save()
     person.save()
