@@ -4,7 +4,7 @@ from person.models import Person
 
 
 class Ride(models.Model):
-    creator = models.ForeignKey(Person, on_delete=models.SET_NULL)
+    creator = models.ForeignKey(Person, on_delete=models.SET_NULL, null=True)
     num_travelers = models.IntegerField()
     description = models.TextField(default=None, null=True)
     driver = models.ManyToManyField(
@@ -14,5 +14,5 @@ class Ride(models.Model):
     riders = models.TextField(null=True)
     estimated_cost = models.FloatField(default=None, null=True)
     path = models.OneToOneField(Path, on_delete=models.CASCADE, primary_key=True)
-    RIDE_TYPES = ["Rideshare", "Student Driver"]
+    RIDE_TYPES = [("rideshare", "Rideshare"), ("studentdriver", "Student Driver")]
     type = models.CharField(max_length=20, choices=RIDE_TYPES)
