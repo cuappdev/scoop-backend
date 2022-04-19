@@ -15,7 +15,7 @@ class Ride(models.Model):
         Person, on_delete=models.SET_NULL, null=True, related_name="driver"
     )
     is_flexible = models.BooleanField(default=False)
-    riders = models.TextField(null=True)  # string list of riders
+    riders = models.ManyToManyField(Person)
     estimated_cost = models.FloatField(default=None, null=True)
     path = models.OneToOneField(Path, on_delete=models.CASCADE, primary_key=True)
     RIDE_TYPES = [("rideshare", "Rideshare"), ("studentdriver", "Student Driver")]
