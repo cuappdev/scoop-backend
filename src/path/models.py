@@ -6,4 +6,3 @@ class Path(models.Model):
     start_location_name = models.TextField()
     end_location = models.TextField()
     end_location_name = models.TextField()
-    estimated_cost = models.FloatField(default=None, null=True)
