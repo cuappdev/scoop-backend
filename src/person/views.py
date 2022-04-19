@@ -9,8 +9,8 @@ from rest_framework import status
 from .controllers.authenticate_controller import AuthenticateController
 from .controllers.developer_controller import DeveloperController
 from .controllers.update_controller import UpdatePersonController
-from .serializer import AuthenticateSerializer
-from .serializer import UserSerializer
+from .serializers import AuthenticateSerializer
+from .serializers import UserSerializer
 
 
 class AuthenticateView(generics.GenericAPIView):
