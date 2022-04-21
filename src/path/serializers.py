@@ -7,9 +7,9 @@ class PathSerializer(serializers.ModelSerializer):
         model = Path
         fields = (
             "id",
-            "start_location_id",
+            "start_location_place_id",
             "start_location_name",
-            "end_location_id",
+            "end_location_place_id",
             "end_location_name",
         )
         read_only_fields = fields
