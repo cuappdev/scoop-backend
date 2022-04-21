@@ -25,8 +25,9 @@ class RideView(generics.GenericAPIView):
     serializer_class = RideSerializer
     permission_classes = api_settings.CONSUMER_PERMISSIONS
 
-    def get(self, request, id):
+    def get(self, request):
         """Get ride by id."""
+        id = request.query_params.get("id", None)
         if not id:
             return failure_response("Missing id")
         if not Ride.objects.filter(path_id=int(id)).exists():

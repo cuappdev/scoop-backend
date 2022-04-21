@@ -10,6 +10,6 @@ urlpatterns = [
     path("authenticate/", AuthenticateView.as_view(), name="authenticate"),
     path("dev/", DeveloperView.as_view(), name="dev"),
     path("me/", MeView.as_view(), name="me"),
-    path("ride/<int:id>/", RideView.as_view(), name="ride"),
+    path("ride/", RideView.as_view(), name="ride"),
     path("rides/", AllRidesView.as_view(), name="all_rides"),
 ]

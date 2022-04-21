@@ -31,13 +31,21 @@ class RideSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
     def get_creator(self, ride):
+        if not ride.creator:
+            return None
+        if not User.objects.filter(id=ride.creator.id).exists():
+            return None
         creator = UserSerializer(User.objects.get(id=ride.creator.id)).data
         if creator == {}:
             return None
         return creator
 
     def get_driver(self, ride):
-        driver = UserSerializer(ride.driver).data
+        if not ride.driver:
+            return None
+        if User.objects.filter(id=ride.driver.id).exists():
+            return None
+        driver = UserSerializer(User.objects.get(id=ride.driver.id)).data
         if driver == {}:
             return None
         return driver
