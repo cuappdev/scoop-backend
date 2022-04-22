@@ -28,10 +28,10 @@ class CreateRideController:
 
         # Verify all required information is provided
         if (
-            not start_location_place_id
-            or not start_location_name
-            or not end_location_name
-            or not end_location_place_id
+            start_location_place_id is None
+            or start_location_name is None
+            or end_location_name is None
+            or end_location_place_id is None
         ):
             return failure_response("Missing path information", 400)
 
