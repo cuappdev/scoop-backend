@@ -1,14 +1,14 @@
 from path.serializers import PathSerializer
-from person.serializers import UserSerializer
+from person.simple_serializers import SimplePersonSerializer
 from rest_framework import serializers
 from ride.models import Ride
 
 
 class RideSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source="path.id")
-    creator = UserSerializer()
-    driver = UserSerializer()
-    riders = UserSerializer(many=True)
+    creator = SimplePersonSerializer()
+    driver = SimplePersonSerializer()
+    riders = SimplePersonSerializer(many=True)
     path = PathSerializer()
 
     class Meta:
