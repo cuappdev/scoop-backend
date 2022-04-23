@@ -17,8 +17,9 @@ class AllRidesView(generics.GenericAPIView):
 
     def get(self, request):
         """Get all rides."""
-        rides = [self.serializer_class(ride).data for ride in Ride.objects.all()]
-        return success_response(rides)
+        return success_response(
+            self.serializer_class(Ride.objects.all(), many=True).data
+        )
 
 
 class RideView(generics.GenericAPIView):
