@@ -24,3 +24,17 @@ def update(model, attr_name, attr_value):
         and attr_value != getattr(model, attr_name)
     ):
         setattr(model, attr_name, attr_value)
+
+
+def update_many_to_many_set(class_name, existing_set, ids):
+    """Update a ManyToMany relation set for any object"""
+    if ids is not None:
+        new_objects = []
+        for id in ids:
+            new_object = class_name.objects.filter(id=id)
+            if not new_object:
+                return failure_response(
+                    f"{class_name.__name__} id {id} does not exist."
+                )
+            new_objects.append(new_object[0])
+        existing_set.set(new_objects)
