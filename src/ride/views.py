@@ -44,8 +44,6 @@ class RideView(generics.GenericAPIView):
 
     def post(self, request, id):
         """Update ride by id"""
-        if not Ride.objects.filter(path_id=int(id)).exists():
-            return failure_response("Ride does not exist")
         try:
             data = json.loads(request.body)
         except json.JSONDecodeError:
