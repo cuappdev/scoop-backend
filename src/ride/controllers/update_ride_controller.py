@@ -1,6 +1,7 @@
 from api.utils import failure_response
 from api.utils import success_response
 from api.utils import update
+from django.core.exceptions import ObjectDoesNotExist
 from person.models import Person
 
 from ..models import Ride
@@ -14,7 +15,6 @@ class UpdateRideController:
         self._id = id
 
     def process(self):
-        # Get the model
         if not Ride.objects.filter(path_id=int(self._id)).exists():
             return failure_response("Ride does not exist")
         ride = Ride.objects.get(path_id=self._id)
@@ -44,8 +44,8 @@ class UpdateRideController:
 
         try:
             ride.riders.set([Person.objects.get(id=rider) for rider in rider_ids])
-        except Exception as e:
-            return failure_response(f"Invalid rider passed in: {e}")
+        except ObjectDoesNotExist:
+            return failure_response("Invalid rider passed in")
 
         update(ride, "max_travelers", max_travelers)
         update(ride, "min_travelers", min_travelers)
