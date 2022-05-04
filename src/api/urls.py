@@ -11,5 +11,5 @@ urlpatterns = [
     path("dev/", DeveloperView.as_view(), name="dev"),
     path("me/", MeView.as_view(), name="me"),
     path("rides/<int:id>/", RideView.as_view(), name="ride"),
-    path("rides/", RidesView.as_view(), name="all_rides"),
+    path("rides/", RidesView.as_view(), name="rides"),
 ]

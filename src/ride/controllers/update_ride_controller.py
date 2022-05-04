@@ -42,10 +42,11 @@ class UpdateRideController:
             # if driver removes themself from ride
             ride.driver = None
 
-        try:
-            ride.riders.set([Person.objects.get(id=rider) for rider in rider_ids])
-        except ObjectDoesNotExist:
-            return failure_response("Invalid rider passed in")
+        if rider_ids is not None:
+            try:
+                ride.riders.set([Person.objects.get(id=rider) for rider in rider_ids])
+            except ObjectDoesNotExist:
+                return failure_response("Invalid rider passed in")
 
         update(ride, "max_travelers", max_travelers)
         update(ride, "min_travelers", min_travelers)
