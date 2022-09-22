@@ -17,7 +17,7 @@ class UpdateRideController:
     def process(self):
         if not Ride.objects.filter(path_id=int(self._id)).exists():
             return failure_response("Ride does not exist")
-        ride = Ride.objects.get(path_id=self._id)
+        ride = Ride.objects.get(id=self._id)
         path = ride.path
 
         # Extract attributes
@@ -40,10 +40,10 @@ class UpdateRideController:
             update(ride, "creator", creator)
             # if creator changes, update approver of ride
             if Request.objects.filter(ride=self._id).exists():
-                requests = Request.objects.get(ride=self._id, many=True)
-                for r in requests:
-                    update(r, "approver", creator)
-                    r.save()
+                requests = Request.objects.filter(ride=self._id).all()
+                for req in requests:
+                    update(req, "approver_id", creator.id)
+                    req.save()
 
         if driver_id is not None and Person.objects.filter(id=driver_id).exists():
             driver = Person.objects.get(id=driver_id)
@@ -67,5 +67,5 @@ class UpdateRideController:
         # Save new changes
         ride.save()
         path.save()
-        ride = Ride.objects.get(path_id=ride.path_id)
+        ride = Ride.objects.get(id=self._id)
         return success_response(self._serializer(ride).data)
