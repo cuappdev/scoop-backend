@@ -3,6 +3,7 @@ from api.utils import success_response
 from api.utils import update
 from django.core.exceptions import ObjectDoesNotExist
 from person.models import Person
+from request.models import Request
 
 from ..models import Ride
 
@@ -21,6 +22,7 @@ class UpdateRideController:
         path = ride.path
 
         # Extract attributes
+        creator = self._data.get("creator")
         max_travelers = self._data.get("max_travelers")
         min_travelers = self._data.get("min_travelers")
         description = self._data.get("description", "")
@@ -35,6 +37,16 @@ class UpdateRideController:
         type = self._data.get("type")
 
         # Modify new values
+        if creator is not None and Person.objects.filter(id=creator).exists():
+            creator = Person.objects.get(id=creator)
+            update(ride, "creator", creator)
+            # if creator changes, update approver of ride
+            if Request.objects.filter(ride=self._id).exists():
+                requests = Request.objects.get(ride=self._id, many=True)
+                for r in requests:
+                    update(r, "approver", creator)
+                    r.save()
+
         if driver_id is not None and Person.objects.filter(id=driver_id).exists():
             driver = Person.objects.get(id=driver_id)
             update(ride, "driver", driver)
