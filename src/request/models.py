@@ -5,7 +5,7 @@ from ride.models import Ride
 
 class Request(models.Model):
     ride = models.ForeignKey(Ride, on_delete=models.CASCADE)
-    approvee = models.OneToOneField(
+    approvee = models.ForeignKey(
         Person, on_delete=models.CASCADE, default=None, related_name="approvee"
     )
     approver = models.ForeignKey(
