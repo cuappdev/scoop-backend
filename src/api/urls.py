@@ -15,5 +15,5 @@ urlpatterns = [
     path("rides/<int:id>/", RideView.as_view(), name="ride"),
     path("rides/", RidesView.as_view(), name="rides"),
     path("requests/<int:id>/", RequestView.as_view(), name="request"),
-    path("requests/", RequestsView.as_view(), name="request"),
+    path("requests/", RequestsView.as_view(), name="requests"),
 ]
