@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "person",
     "ride",
     "path",
+    "request",
 ]
 
 MIDDLEWARE = [
