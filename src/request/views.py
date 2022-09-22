@@ -7,6 +7,7 @@ from rest_framework import generics
 from rest_framework import status
 
 from .controllers.create_request_controller import CreateRequestController
+from .controllers.update_request_controller import UpdateRequestController
 from .models import Request
 from .serializers import RequestSerializer
 
@@ -27,6 +28,16 @@ class RequestsView(generics.GenericAPIView):
 class RequestView(generics.GenericAPIView):
     serializer_class = RequestSerializer
     permission_classes = api_settings.CONSUMER_PERMISSIONS
+
+    def post(self, request, id):
+        """Update a request."""
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            data = request.data
+        return UpdateRequestController(
+            request, data, self.serializer_class, id
+        ).process()
 
     def get(self, request, id):
         """Get request by id."""
