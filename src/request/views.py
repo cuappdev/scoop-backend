@@ -1,10 +1,8 @@
 import json
 
 from api import settings as api_settings
-from api.utils import failure_response
 from api.utils import success_response
 from rest_framework import generics
-from rest_framework import status
 
 from .controllers.create_request_controller import CreateRequestController
 from .models import Request
@@ -23,14 +21,24 @@ class RequestsView(generics.GenericAPIView):
             data = request.data
         return CreateRequestController(request, data, self.serializer_class).process()
 
+    def get(self, request):
+        """Get all of a user's active requests."""
+        user = request.user.person
+        awaiting_approval = Request.objects.filter(
+            approver=user, approved=None
+        ).order_by("timestamp")
+        pending_requests = Request.objects.filter(
+            approvee=user, approved=None
+        ).order_by("timestamp")
+        res = {
+            "To Approve": self.serializer_class(awaiting_approval, many=True).data,
+            "Waiting for Approval": self.serializer_class(
+                pending_requests, many=True
+            ).data,
+        }
+        return success_response(res)
+
 
 class RequestView(generics.GenericAPIView):
     serializer_class = RequestSerializer
     permission_classes = api_settings.CONSUMER_PERMISSIONS
-
-    def get(self, request, id):
-        """Get request by id."""
-        if not Request.objects.filter(id=int(id)).exists():
-            return failure_response("Request does not exist")
-        req = Request.objects.get(id=int(id))
-        return success_response(self.serializer_class(req).data, status.HTTP_200_OK)

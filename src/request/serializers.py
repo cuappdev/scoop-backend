@@ -12,5 +12,5 @@ class RequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Request
-        fields = ("id", "approvee", "approver", "ride", "approved")
+        fields = ("id", "approvee", "approver", "ride", "approved", "timestamp")
         read_only_fields = fields

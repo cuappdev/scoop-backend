@@ -32,6 +32,12 @@ class CreateRequestController:
         ride = Ride.objects.get(id=ride_id)
         approver = ride.creator
 
+        request_exists = Request.objects.filter(
+            approvee=approvee, approver=approver, ride=ride
+        ).exists()
+        if request_exists:
+            return failure_response("Request already exists for this ride")
+
         # Create request and return new request with given fields
         request = Request.objects.create(
             approvee=approvee,
