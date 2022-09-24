@@ -5,7 +5,7 @@ from ride.models import Ride
 
 
 class RideSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(source="path.id")
+
     creator = SimplePersonSerializer()
     driver = SimplePersonSerializer()
     riders = SimplePersonSerializer(many=True)
