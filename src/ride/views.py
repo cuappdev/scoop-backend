@@ -37,9 +37,9 @@ class RideView(generics.GenericAPIView):
 
     def get(self, request, id):
         """Get ride by id."""
-        if not Ride.objects.filter(id=int(id)).exists():
+        if not Ride.objects.filter(id=id).exists():
             return failure_response("Ride does not exist")
-        ride = Ride.objects.get(id=int(id))
+        ride = Ride.objects.get(id=id)
         return success_response(self.serializer_class(ride).data, status.HTTP_200_OK)
 
     def post(self, request, id):
