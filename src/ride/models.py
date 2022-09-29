@@ -19,5 +19,5 @@ class Ride(models.Model):
     is_flexible = models.BooleanField(default=False)
     riders = models.ManyToManyField(Person)
     estimated_cost = models.FloatField(default=None, null=True)
-    path = models.OneToOneField(Path, on_delete=models.CASCADE, primary_key=True)
+    path = models.ForeignKey(Path, on_delete=models.CASCADE, primary_key=False)
     type = models.CharField(max_length=20, choices=RIDE_TYPES)
