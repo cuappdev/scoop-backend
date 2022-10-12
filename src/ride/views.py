@@ -58,9 +58,5 @@ class SearchView(generics.GenericAPIView):
 
     def get(self, request):
         """Search for a ride."""
-        try:
-            data = json.loads(request.body)
-        except json.JSONDecodeError:
-            data = request.data
-
+        data = json.loads(request.body)
         return SearchRideController(data, request, self.serializer_class).process()
