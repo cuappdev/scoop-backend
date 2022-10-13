@@ -50,8 +50,12 @@ class CreateRideController:
             return failure_response("Creator does not exist")
         creator_person = Person.objects.get(id=creator)
 
-        # Create path and ride and return new ride with given fields
-        path_exists = Path.objects.filter(start_location_place_id=start_location_place_id,end_location_place_id=end_location_place_id,).exists()
+
+        # Create new path or retrieve existing path
+        path_exists = Path.objects.filter(
+            start_location_place_id=start_location_place_id,
+            end_location_place_id=end_location_place_id,
+        ).exists()
         if not path_exists:
             path = Path.objects.create(
                 start_location_place_id=start_location_place_id,
@@ -61,8 +65,12 @@ class CreateRideController:
             )
             path.save()
         else:
-            path = Path.objects.get(start_location_place_id=start_location_place_id,end_location_place_id=end_location_place_id,)
-        
+            path = Path.objects.get(
+                start_location_place_id=start_location_place_id,
+                end_location_place_id=end_location_place_id,
+            )
+
+        # Create new ride
         ride = Ride.objects.create(
             creator=creator_person,
             max_travelers=max_travelers,

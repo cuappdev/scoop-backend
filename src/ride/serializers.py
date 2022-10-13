@@ -5,7 +5,6 @@ from ride.models import Ride
 
 
 class RideSerializer(serializers.ModelSerializer):
-
     creator = SimplePersonSerializer()
     driver = SimplePersonSerializer()
     riders = SimplePersonSerializer(many=True)
