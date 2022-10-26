@@ -20,16 +20,18 @@ class CreateRequestController:
         # Verify all required information is provided
         if approvee_id is None or ride_id is None:
             return failure_response("Missing request information", 400)
+        elif type(approvee_id) != int or type(ride_id) != int:
+            return failure_response("Approvee ID and/or ride ID is not int")
 
-        approvee_exists = Person.objects.filter(id=int(approvee_id)).exists()
-        if not approvee_exists:
+        users = Person.objects.filter(id=approvee_id)
+        if len(users) != 1:
             return failure_response("Approvee does not exist")
-        approvee = Person.objects.get(id=approvee_id)
+        approvee = users[0]
 
-        ride_exists = Ride.objects.filter(id=int(ride_id)).exists()
-        if not ride_exists:
+        rides = Ride.objects.filter(id=ride_id)
+        if len(rides) != 1:
             return failure_response("Ride does not exist")
-        ride = Ride.objects.get(id=ride_id)
+        ride = rides[0]
         approver = ride.creator
 
         request_exists = Request.objects.filter(
