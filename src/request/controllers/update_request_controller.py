@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from api.utils import failure_response
 from api.utils import success_response
 from api.utils import update
@@ -16,9 +18,10 @@ class UpdateRequestController:
         self._id = id
 
     def process(self):
-        if not Request.objects.filter(id=int(self._id)).exists():
+        requests = Request.objects.filter(id=int(self._id))
+        if len(requests) != 1:
             return failure_response("Request does not exist")
-        request = Request.objects.get(id=self._id)
+        request = requests.first()
 
         # Extract attributes
         approved = self._data.get("approved")
@@ -38,6 +41,10 @@ class UpdateRequestController:
             except ObjectDoesNotExist:
                 return failure_response("Invalid rider passed in")
             ride.save()
+
+        # If approved is not None or ride's departure deadline has passed, delete request
+        if approved is not None or ride.departure_datetime < datetime.now():
+            Request.objects.filter(id=self._id).delete()
 
         # Save new changes
         request.save()
