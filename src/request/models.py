@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from person.models import Person
 from ride.models import Ride
 
@@ -16,3 +17,4 @@ class Request(models.Model):
         null=True,
     )
     approved = models.BooleanField(default=None, null=True)
+    timestamp = models.DateTimeField(default=timezone.now())

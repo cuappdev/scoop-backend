@@ -15,7 +15,7 @@ class UpdateRideController:
         self._id = id
 
     def process(self):
-        if not Ride.objects.filter(path_id=int(self._id)).exists():
+        if not Ride.objects.filter(id=int(self._id)).exists():
             return failure_response("Ride does not exist")
         ride = Ride.objects.get(id=self._id)
         path = ride.path
@@ -67,5 +67,5 @@ class UpdateRideController:
         # Save new changes
         ride.save()
         path.save()
-        ride = Ride.objects.get(id=self._id)
+        ride = Ride.objects.get(id=ride.id)
         return success_response(self._serializer(ride).data)
