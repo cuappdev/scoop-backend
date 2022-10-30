@@ -50,6 +50,7 @@ class CreateRideController:
             return failure_response("Creator does not exist")
         creator_person = Person.objects.get(id=creator)
 
+
         # Create new path or retrieve existing path
         path_exists = Path.objects.filter(
             start_location_place_id=start_location_place_id,
