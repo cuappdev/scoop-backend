@@ -24,12 +24,7 @@ class SearchRideController:
         ).exists():
             return success_response([])
 
-        splitted_list = departure_datetime.split("-")
-        splitted_list_int = [int(k) for k in splitted_list]
-
-        departure_datetime_object = datetime.datetime(
-            splitted_list_int[0], splitted_list_int[1], splitted_list_int[2]
-        )
+        departure_datetime_object = datetime.datetime.fromisoformat(departure_datetime)
 
         departure_yesterday = departure_datetime_object - datetime.timedelta(days=1)
         departure_tomorrow = departure_datetime_object + datetime.timedelta(days=1)
@@ -44,6 +39,5 @@ class SearchRideController:
             departure_datetime__gte=departure_yesterday,
             departure_datetime__lte=departure_tomorrow,
         )
-        # all_rides = Ride.objects.filter(path = path, departure_datetime = departure_datetime)
 
         return success_response(self._serializer(all_rides, many=True).data)
