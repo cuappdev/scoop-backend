@@ -16,7 +16,7 @@ urlpatterns = [
     path("me/", MeView.as_view(), name="me"),
     path("rides/<int:id>/", RideView.as_view(), name="ride"),
     path("rides/", RidesView.as_view(), name="rides"),
-    path("search/", SearchView.as_view(), name="search")
+    path("search/", SearchView.as_view(), name="search"),
     re_path(r"^requests/", include("request.urls")),
     path("prompts/", PromptsView.as_view(), name="prompts")
 ]
