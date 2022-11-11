@@ -1,4 +1,4 @@
-from prompt.models import Prompt
+from prompts.models import Prompt
 from rest_framework import serializers
 
 
