@@ -24,3 +24,12 @@ def update(model, attr_name, attr_value):
         and attr_value != getattr(model, attr_name)
     ):
         setattr(model, attr_name, attr_value)
+
+def modify_attribute(model, attr_name, attr_value):
+    """Modify an attribute if it isn't None and has been changed."""
+    if (
+        attr_value is not None
+        and attr_value != "null"
+        and attr_value != getattr(model, attr_name)
+    ):
+        setattr(model, attr_name, attr_value)
