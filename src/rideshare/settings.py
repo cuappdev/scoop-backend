@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "ride",
     "path",
     "request",
+    "prompts"
 ]
 
 MIDDLEWARE = [
