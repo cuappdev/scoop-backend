@@ -1,12 +1,10 @@
 import json
-
 from api import settings as api_settings
 from api.utils import failure_response
 from api.utils import success_response
 from prompts.models import Prompt
 from rest_framework import generics
 from rest_framework import status
-
 from .controllers.create_prompt_controller import CreatePromptController
 from .controllers.update_prompt_controller import UpdatePromptController
 from .serializers import PromptSerializer
@@ -47,10 +45,7 @@ class PromptView(generics.GenericAPIView):
 
     def post(self, request, id):
         """Update prompt by id."""
-        try:
-            data = json.loads(request.body)
-        except json.JSONDecodeError:
-            data = request.data
+        data = json.loads(request.body)
         return UpdatePromptController(id, data, self.serializer_class).process()
 
     def delete(self, request, id):

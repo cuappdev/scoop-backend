@@ -1,5 +1,5 @@
 from api.utils import failure_response
-from api.utils import modify_attribute
+from api.utils import update
 from api.utils import success_response
 from prompts.models import Prompt
 from rest_framework import status 
@@ -19,11 +19,11 @@ class UpdatePromptController:
 
         # Extract attributes
         name = self._data.get("question_name")
-        label = self._data.get("question_placeholder")
+        placeholder = self._data.get("question_placeholder")
 
         # Modify new fields
-        modify_attribute(prompt, "question_name", name)
-        modify_attribute(prompt, "question_placeholder", label)
+        update(prompt, "question_name", name)
+        update(prompt, "question_placeholder", placeholder)
 
         prompt.save()
         return success_response(self._serializer(prompt).data, status.HTTP_200_OK)

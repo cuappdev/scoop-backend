@@ -7,8 +7,6 @@ from person.views import MeView
 from ride.views import RidesView
 from ride.views import RideView
 from ride.views import SearchView
-from prompts.views import PromptsView
-from prompts.views import PromptView
 
 
 urlpatterns = [
@@ -19,6 +17,5 @@ urlpatterns = [
     path("rides/", RidesView.as_view(), name="rides"),
     path("search/", SearchView.as_view(), name="search"),
     re_path(r"^requests/", include("request.urls")),
-    path("prompts/", PromptsView.as_view(), name="prompts"),
-    path("prompts/<int:id>/", PromptView.as_view(), name="prompt")
+    re_path(r"^prompts/", include("prompts.urls"))
 ]
