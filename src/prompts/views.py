@@ -29,7 +29,6 @@ class PromptsView(generics.GenericAPIView):
             data = request.data
         return CreatePromptController(data, self.serializer_class).process()
 
-
 class PromptView(generics.GenericAPIView):
     serializer_class = PromptSerializer
     permission_classes = api_settings.CONSUMER_PERMISSIONS
@@ -57,3 +56,4 @@ class PromptView(generics.GenericAPIView):
         return success_response(
             self.serializer_class(prompt[0]).data, status.HTTP_200_OK
         )
+

@@ -13,13 +13,13 @@ class CreatePromptController:
         if name is None:
             return failure_response("No name provided.", status.HTTP_400_BAD_REQUEST)
         
-        label = self._data.get("question_placeholder")
+        placeholder = self._data.get("question_placeholder")
 
-        prompt = Prompt.objects.filter(question_name=name, question_placeholder=label)
+        prompt = Prompt.objects.filter(question_name=name, question_placeholder=placeholder)
         if prompt:
             return success_response(self._serializer(prompt[0]).data, status.HTTP_200_OK)
         
-        prompt = Prompt.objects.create(question_name=name, question_placeholder=label)
+        prompt = Prompt.objects.create(question_name=name, question_placeholder=placeholder)
         prompt.save()
         return success_response(self._serializer(prompt).data, status.HTTP_201_CREATED)
     
