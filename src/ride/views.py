@@ -7,6 +7,7 @@ from rest_framework import generics
 from rest_framework import status
 
 from .controllers.create_ride_controller import CreateRideController
+from .controllers.search_ride_controller import SearchRideController
 from .controllers.update_ride_controller import UpdateRideController
 from .models import Ride
 from .serializers import RideSerializer
@@ -49,3 +50,17 @@ class RideView(generics.GenericAPIView):
         except json.JSONDecodeError:
             data = request.data
         return UpdateRideController(request, data, self.serializer_class, id).process()
+
+
+class SearchView(generics.GenericAPIView):
+    serializer_class = RideSerializer
+    permission_classes = api_settings.CONSUMER_PERMISSIONS
+
+    def get(self, request):
+        """Search for a ride."""
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            data = request.data
+
+        return SearchRideController(data, request, self.serializer_class).process()
