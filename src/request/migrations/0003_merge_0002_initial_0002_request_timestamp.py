@@ -6,9 +6,8 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('request', '0002_initial'),
-        ('request', '0002_request_timestamp'),
+        ("request", "0002_initial"),
+        ("request", "0002_request_timestamp"),
     ]
 
-    operations = [
-    ]
+    operations = []
