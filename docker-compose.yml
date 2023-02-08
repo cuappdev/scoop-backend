@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   app:
-    image: scoop-backend
+    image: cornellappdev/scoop-prod
     hostname: app
     env_file: .envrc
     ports:
