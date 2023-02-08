@@ -3,7 +3,7 @@ name: Docker Build & Push and Deploy to scoop-prod
 on:
   push:
     branches: [master]
-  workflow-dispatch:
+  workflow_dispatch:
 
 jobs:
   path-context:
