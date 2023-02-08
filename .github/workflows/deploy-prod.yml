@@ -1,8 +1,9 @@
-name: Docker Build & Push and Deploy to scoop-dev
+name: Docker Build & Push and Deploy to scoop-prod
 
 on:
   push:
-    branches: [main]
+    branches: [master]
+  workflow-dispatch:
 
 jobs:
   path-context:
@@ -26,15 +27,15 @@ jobs:
           context: ./
           file: ./Dockerfile
           push: true
-          tags: cornellappdev/resell-dev:${{ steps.vars.outputs.sha_short }}
+          tags: cornellappdev/scoop-prod:${{ steps.vars.outputs.sha_short }}
       - name: Remote SSH and Deploy
         uses: appleboy/ssh-action@master
         env:
           IMAGE_TAG: ${{ steps.vars.outputs.sha_short }}
         with:
-          host: ${{ secrets.DEV_SERVER_HOST }}
+          host: ${{ secrets.PROD_SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.DEV_SERVER_KEY }}
+          key: ${{ secrets.PROD_SERVER_KEY }}
           script: |
             export IMAGE_TAG=${{ steps.vars.outputs.sha_short }}
             cd docker-compose
