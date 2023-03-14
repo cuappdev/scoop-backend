@@ -1,5 +1,8 @@
+import json
+
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from rest_framework.fields import SerializerMethodField
 
 
 class AuthenticateSerializer(serializers.ModelSerializer):
@@ -25,6 +28,25 @@ class UserSerializer(serializers.ModelSerializer):
     pronouns = serializers.CharField(source="person.pronouns")
     profile_pic_url = serializers.CharField(source="person.profile_pic_url")
     phone_number = serializers.CharField(source="person.phone_number")
+    prompts = SerializerMethodField("get_prompts")
+
+    def get_prompts(self, user):
+        prompt_questions = user.person.prompt_questions.all()
+        prompt_answers = user.person.prompt_answers
+        if prompt_answers is None:
+            return []
+        prompt_answers = json.loads(prompt_answers)
+        prompts = []
+        for i in range(len(prompt_questions)):
+            prompts.append(
+                {
+                    "id": prompt_questions[i].id,
+                    "question_name": prompt_questions[i].question_name,
+                    "question_placeholder": prompt_questions[i].question_placeholder,
+                    "answer": prompt_answers[i],
+                }
+            )
+        return prompts
 
     class Meta:
         model = User
@@ -37,5 +59,6 @@ class UserSerializer(serializers.ModelSerializer):
             "grade",
             "profile_pic_url",
             "pronouns",
+            "prompts",
         )
         read_only_fields = fields

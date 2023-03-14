@@ -1,3 +1,5 @@
+import json
+
 from api.utils import failure_response
 from api.utils import success_response
 from api.utils import update
@@ -26,7 +28,7 @@ class UpdatePersonController:
         pronouns = self._data.get("pronouns")
 
         if prompts is not None:
-            prompt_questions = []
+            prompt_ids = []
             prompt_answers = []
 
             for prompt in prompts:
@@ -35,11 +37,11 @@ class UpdatePersonController:
                 question = Prompt.objects.filter(id=prompt_id)
                 if not question:
                     return failure_response(f"Prompt id {prompt_id} does not exist.")
-                prompt_questions.append(prompt_id)
+                prompt_ids.append(prompt_id)
                 prompt_answers.append(answer)
 
-            update(self._person, "prompt_answers", prompt_answers)
-            update(self._person, "prompt_questions", prompt_questions)
+            self._person.prompt_questions.set(prompt_ids)
+            update(self._person, "prompt_answers", json.dumps(prompt_answers))
 
         update(self._person, "netid", netid)
         update(self._user, "first_name", first_name)
