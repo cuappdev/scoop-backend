@@ -1,6 +1,10 @@
+import json
+
+from api.utils import failure_response
 from api.utils import success_response
 from api.utils import update
 from django.contrib.auth.models import User
+from prompts.models import Prompt
 
 from ..utils import remove_profile_pic
 from ..utils import upload_profile_pic
@@ -20,7 +24,24 @@ class UpdatePersonController:
         grade = self._data.get("grade")
         phone_number = self._data.get("phone_number")
         profile_pic_base64 = self._data.get("profile_pic_base64")
+        prompts = self._data.get("prompts")
         pronouns = self._data.get("pronouns")
+
+        if prompts is not None:
+            prompt_ids = []
+            prompt_answers = []
+
+            for prompt in prompts:
+                prompt_id = prompt.get("id")
+                answer = prompt.get("answer")
+                question = Prompt.objects.filter(id=prompt_id)
+                if not question:
+                    return failure_response(f"Prompt id {prompt_id} does not exist.")
+                prompt_ids.append(prompt_id)
+                prompt_answers.append(answer)
+
+            self._person.prompt_questions.set(prompt_ids)
+            update(self._person, "prompt_answers", json.dumps(prompt_answers))
 
         update(self._person, "netid", netid)
         update(self._user, "first_name", first_name)
