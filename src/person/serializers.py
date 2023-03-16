@@ -52,11 +52,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_rides(self, user):
         rides = user.person.driver.all() | user.person.ride_set.all()
-        results = []
-        for ride in rides:
-            serialized = SimpleRideSerializer(ride)
-            results.append(serialized.data)
-        return results
+        return [SimpleRideSerializer(ride).data for ride in rides]
 
     class Meta:
         model = User
