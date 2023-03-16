@@ -3,6 +3,7 @@ import json
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
+from ride.simple_serializers import SimpleRideSerializer
 
 
 class AuthenticateSerializer(serializers.ModelSerializer):
@@ -29,6 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
     profile_pic_url = serializers.CharField(source="person.profile_pic_url")
     phone_number = serializers.CharField(source="person.phone_number")
     prompts = SerializerMethodField("get_prompts")
+    rides = SerializerMethodField("get_rides")
 
     def get_prompts(self, user):
         prompt_questions = user.person.prompt_questions.all()
@@ -48,6 +50,14 @@ class UserSerializer(serializers.ModelSerializer):
             )
         return prompts
 
+    def get_rides(self, user):
+        rides = user.person.driver.all() | user.person.ride_set.all()
+        results = []
+        for ride in rides:
+            serialized = SimpleRideSerializer(ride)
+            results.append(serialized.data)
+        return results
+
     class Meta:
         model = User
         fields = (
@@ -60,5 +70,6 @@ class UserSerializer(serializers.ModelSerializer):
             "profile_pic_url",
             "pronouns",
             "prompts",
+            "rides",
         )
         read_only_fields = fields
