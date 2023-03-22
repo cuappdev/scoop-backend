@@ -20,6 +20,7 @@ class SearchRideController:
         departure_datetime = self._data.get("departure_datetime")
         start_location_place_id = self._data.get("start_location_place_id")
         end_location_place_id = self._data.get("start_location_place_id")
+        radius = self._data.get("radius")
 
         # Get latitude and longitude of start and end locations
         params = {
@@ -54,8 +55,8 @@ class SearchRideController:
             path_start_coords = (path.start_lat, path.start_lng)
             path_end_coords = (path.end_lat, path.end_lng)
             if (
-                geopy.distance.geodesic(path_start_coords, start_coords).miles < 5
-                and geopy.distance.geodesic(path_end_coords, end_coords).km < 5
+                geopy.distance.geodesic(path_start_coords, start_coords).miles < radius
+                and geopy.distance.geodesic(path_end_coords, end_coords).miles < radius
             ):
                 paths.append(path)
 
