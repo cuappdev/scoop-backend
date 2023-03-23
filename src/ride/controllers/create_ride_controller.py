@@ -1,7 +1,10 @@
+from os import environ
+
 from api.utils import failure_response
 from api.utils import success_response
 from path.models import Path
 from person.models import Person
+import requests
 from rest_framework import status
 
 from ..models import Ride
@@ -50,18 +53,49 @@ class CreateRideController:
             return failure_response("Creator does not exist")
         creator_person = Person.objects.get(id=creator)
 
-
         # Create new path or retrieve existing path
         path_exists = Path.objects.filter(
             start_location_place_id=start_location_place_id,
             end_location_place_id=end_location_place_id,
         ).exists()
         if not path_exists:
+            # Get latitude and longitude of start and end location
+            params = {
+                "place_id": start_location_place_id,
+                "key": environ.get("GOOGLE_API_KEY"),
+            }
+            response = requests.get(
+                "https://maps.googleapis.com/maps/api/place/details/json", params=params
+            )
+            if response.status_code == 200:
+                start_coords = (
+                    response.json()["result"]["geometry"]["location"]["lat"],
+                    response.json()["result"]["geometry"]["location"]["lng"],
+                )
+            else:
+                return failure_response("Invalid Google Places ID")
+
+            params["place_id"] = end_location_place_id
+            response = requests.get(
+                "https://maps.googleapis.com/maps/api/place/details/json", params=params
+            )
+            if response.status_code == 200:
+                end_coords = (
+                    response.json()["result"]["geometry"]["location"]["lat"],
+                    response.json()["result"]["geometry"]["location"]["lng"],
+                )
+            else:
+                return failure_response("Invalid Google Places ID")
+
             path = Path.objects.create(
                 start_location_place_id=start_location_place_id,
                 start_location_name=start_location_name,
+                start_lat=start_coords[0],
+                start_lng=start_coords[1],
                 end_location_place_id=end_location_place_id,
                 end_location_name=end_location_name,
+                end_lat=end_coords[0],
+                end_lng=end_coords[1],
             )
             path.save()
         else:
