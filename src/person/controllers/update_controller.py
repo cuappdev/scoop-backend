@@ -28,6 +28,7 @@ class UpdatePersonController:
         pronouns = self._data.get("pronouns")
 
         if prompts is not None:
+            prompts = sorted(prompts, key=lambda x: x["id"])
             prompt_ids = []
             prompt_answers = []
 
