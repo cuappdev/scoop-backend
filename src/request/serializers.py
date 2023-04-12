@@ -1,4 +1,4 @@
-from person.simple_serializers import SimplePersonSerializer
+from person.serializers import UserSerializer
 from rest_framework import serializers
 from ride.simple_serializers import SimpleRideSerializer
 
@@ -6,8 +6,8 @@ from .models import Request
 
 
 class RequestSerializer(serializers.ModelSerializer):
-    approver = SimplePersonSerializer()
-    approvee = SimplePersonSerializer()
+    approver = UserSerializer(source="approver.user")
+    approvee = UserSerializer(source="approvee.user")
     ride = SimpleRideSerializer()
 
     class Meta:
