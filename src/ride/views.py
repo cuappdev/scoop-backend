@@ -56,7 +56,7 @@ class SearchView(generics.GenericAPIView):
     serializer_class = RideSerializer
     permission_classes = api_settings.CONSUMER_PERMISSIONS
 
-    def get(self, request):
+    def post(self, request):
         """Search for a ride."""
         try:
             data = json.loads(request.body)
