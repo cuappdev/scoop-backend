@@ -28,6 +28,8 @@ DEBUG = environ.get("DJANGO_DEBUG")
 
 ALLOWED_HOSTS = environ.get("DJANGO_ALLOWED_HOSTS").split(",")
 
+POSTGRES = environ.get("POSTGRES")
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -85,13 +87,24 @@ REST_FRAMEWORK = {
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if POSTGRES:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": environ.get("POSTGRES_NAME"),
+            "USER": environ.get("POSTGRES_USERNAME"),
+            "PASSWORD": environ.get("POSTGRES_PASSWORD"),
+            "HOST": environ.get("POSTGRES_HOST"),
+            "PORT": environ.get("POSTGRES_PORT"),
+        }
     }
-}
-
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
