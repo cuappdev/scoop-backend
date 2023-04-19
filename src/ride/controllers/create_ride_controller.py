@@ -18,6 +18,7 @@ class CreateRideController:
 
     def process(self):
         creator = self._data.get("creator")
+        driver = self._data.get("driver")
         max_travelers = self._data.get("max_travelers")
         min_travelers = self._data.get("min_travelers")
         description = self._data.get("description", "")
@@ -47,6 +48,11 @@ class CreateRideController:
             or creator is None
         ):
             return failure_response("Missing ride information", 400)
+
+        driver_person = Person.objects.filter(id=int(driver)).exists()
+        if not driver_person:
+            return failure_response("Driver does not exist")
+        driver_person = Person.objects.get(id=driver)
 
         creator_person = Person.objects.filter(id=int(creator)).exists()
         if not creator_person:
@@ -106,6 +112,7 @@ class CreateRideController:
 
         # Create new ride
         ride = Ride.objects.create(
+            driver=driver_person,
             creator=creator_person,
             max_travelers=max_travelers,
             description=description,
