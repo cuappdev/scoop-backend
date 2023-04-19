@@ -51,7 +51,12 @@ class UserSerializer(serializers.ModelSerializer):
         return prompts
 
     def get_rides(self, user):
-        rides = user.person.driver.all() | user.person.ride_set.all()
+        rides = (
+            user.person.driver.all()
+            | user.person.ride_set.all()
+            | user.person.creator.all()
+        )
+        rides = sorted(rides, key=lambda ride: ride.id)
         return [SimpleRideSerializer(ride).data for ride in rides]
 
     class Meta:
