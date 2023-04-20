@@ -5,6 +5,7 @@ from api.utils import failure_response
 from api.utils import success_response
 import geopy.distance
 import requests
+import zoneinfo
 
 from ..models import Path
 from ..models import Ride
@@ -60,9 +61,10 @@ class SearchRideController:
             ):
                 paths.append(path)
 
+        tz = zoneinfo.ZoneInfo("America/New_York")
         departure_datetime_object = datetime.datetime.fromisoformat(
             departure_datetime
-        ).astimezone()
+        ).astimezone(tz)
 
         departure_yesterday = departure_datetime_object - datetime.timedelta(days=1)
         departure_tomorrow = departure_datetime_object + datetime.timedelta(days=1)

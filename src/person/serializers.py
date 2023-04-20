@@ -1,6 +1,7 @@
 import json
 
 from django.contrib.auth.models import User
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 from ride.simple_serializers import SimpleRideSerializer
@@ -51,13 +52,18 @@ class UserSerializer(serializers.ModelSerializer):
         return prompts
 
     def get_rides(self, user):
+        active_rides = set()
         rides = (
             user.person.driver.all()
             | user.person.ride_set.all()
             | user.person.creator.all()
         )
         rides = sorted(rides, key=lambda ride: ride.id)
-        return [SimpleRideSerializer(ride).data for ride in rides]
+        # TODO: Write script that deletes non-active rides from DB
+        for ride in rides:
+            if ride.departure_datetime >= timezone.now():
+                active_rides.add(ride)
+        return [SimpleRideSerializer(ride).data for ride in active_rides]
 
     class Meta:
         model = User
