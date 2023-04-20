@@ -59,10 +59,11 @@ class UserSerializer(serializers.ModelSerializer):
             | user.person.creator.all()
         )
         rides = sorted(rides, key=lambda ride: ride.id)
-        # TODO: Write script that deletes non-active rides from DB
         for ride in rides:
             if ride.departure_datetime >= timezone.now():
                 active_rides.add(ride)
+            else:
+                ride.delete()
         return [SimpleRideSerializer(ride).data for ride in active_rides]
 
     class Meta:
