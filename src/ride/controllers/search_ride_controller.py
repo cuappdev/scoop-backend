@@ -5,6 +5,7 @@ from api.utils import failure_response
 from api.utils import success_response
 import geopy.distance
 import requests
+from rideshare.settings import TIME_ZONE
 import zoneinfo
 
 from ..models import Path
@@ -61,7 +62,7 @@ class SearchRideController:
             ):
                 paths.append(path)
 
-        tz = zoneinfo.ZoneInfo("America/New_York")
+        tz = zoneinfo.ZoneInfo(TIME_ZONE)
         departure_datetime_object = datetime.datetime.fromisoformat(
             departure_datetime
         ).astimezone(tz)
