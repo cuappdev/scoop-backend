@@ -53,6 +53,9 @@ class AuthenticateController:
         last_name = token_info.get("family_name")
         profile_pic_url = token_info.get("picture")
         netid = token_info.get("email").split("@")[0]
+        # force fix for scooped email
+        if len(netid) > 10:
+            netid = netid[0:10]
         return netid, username, password, first_name, last_name, profile_pic_url
 
     def get_token_info(self, token):
