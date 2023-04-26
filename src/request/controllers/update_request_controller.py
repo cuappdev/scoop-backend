@@ -2,7 +2,6 @@ from api.utils import failure_response
 from api.utils import success_response
 from api.utils import update
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils import timezone
 from person.models import Person
 from ride.models import Ride
 
@@ -40,10 +39,6 @@ class UpdateRequestController:
             except ObjectDoesNotExist:
                 return failure_response("Invalid rider passed in")
             ride.save()
-
-        # If approved is not None or ride's departure deadline has passed, delete request
-        if approved is not None or ride.departure_datetime < timezone.now():
-            Request.objects.filter(id=self._id).delete()
 
         # Save new changes
         request.save()

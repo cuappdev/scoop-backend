@@ -13,9 +13,9 @@ class GetUserRequestsController:
         awaiting_approval = Request.objects.filter(
             approver=self._user, approved=None
         ).order_by("timestamp")
-        pending_requests = Request.objects.filter(
-            approvee=self._user, approved=None
-        ).order_by("timestamp")
+        pending_requests = Request.objects.filter(approvee=self._user).order_by(
+            "timestamp"
+        )
 
         return success_response(
             {
