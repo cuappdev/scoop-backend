@@ -26,7 +26,7 @@ class SimplePersonSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
     def get_prompts(self, person):
-        prompt_questions = person.prompt_questions.all()
+        prompt_questions = sorted(person.prompt_questions.all(), key=lambda x: x.id)
         prompt_answers = person.prompt_answers
         if prompt_answers is None:
             return []
