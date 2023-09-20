@@ -88,7 +88,7 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Rideshare API',
+    'TITLE': 'Scooped API',
 }
 
 
