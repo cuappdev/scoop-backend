@@ -1,0 +1,720 @@
+openapi: 3.0.3
+info:
+  title: Rideshare API
+  version: 0.0.0
+paths:
+  /api/:
+    get:
+      operationId: root_retrieve
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - corejson
+          - openapi
+          - swagger
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/authenticate/:
+    post:
+      operationId: authenticate_create
+      description: Authenticate the current user.
+      tags:
+      - authenticate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Authenticate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Authenticate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Authenticate'
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authenticate'
+          description: ''
+  /api/dev/:
+    get:
+      operationId: dev_retrieve
+      description: Get all users.
+      tags:
+      - dev
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authenticate'
+          description: ''
+    post:
+      operationId: dev_create
+      description: Create test user or return access token for test user if `id` is
+        provided.
+      tags:
+      - dev
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Authenticate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Authenticate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Authenticate'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authenticate'
+          description: ''
+  /api/me/:
+    get:
+      operationId: me_retrieve
+      description: Get current authenticated user.
+      tags:
+      - me
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    post:
+      operationId: me_create
+      description: Update current authenticated user.
+      tags:
+      - me
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/prompts/:
+    get:
+      operationId: prompts_retrieve
+      description: Get all prompts.
+      tags:
+      - prompts
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prompt'
+          description: ''
+    post:
+      operationId: prompts_create
+      description: Create a prompt.
+      tags:
+      - prompts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Prompt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Prompt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Prompt'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prompt'
+          description: ''
+  /api/prompts/{id}/:
+    get:
+      operationId: prompts_retrieve_2
+      description: Get prompt by id.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - prompts
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prompt'
+          description: ''
+    post:
+      operationId: prompts_create_2
+      description: Update prompt by id.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - prompts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Prompt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Prompt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Prompt'
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prompt'
+          description: ''
+    delete:
+      operationId: prompts_destroy
+      description: Delete prompt by id.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - prompts
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/requests/:
+    get:
+      operationId: requests_retrieve
+      description: Get all of a user's active requests.
+      tags:
+      - requests
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+          description: ''
+    post:
+      operationId: requests_create
+      description: Create a request.
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Request'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Request'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+          description: ''
+  /api/requests/{id}/:
+    post:
+      operationId: requests_create_2
+      description: Update a request.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - requests
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Request'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Request'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Request'
+          description: ''
+  /api/rides/:
+    get:
+      operationId: rides_retrieve
+      description: Get all rides.
+      tags:
+      - rides
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ride'
+          description: ''
+    post:
+      operationId: rides_create
+      description: Create a ride.
+      tags:
+      - rides
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ride'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Ride'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Ride'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ride'
+          description: ''
+  /api/rides/{id}/:
+    get:
+      operationId: rides_retrieve_2
+      description: Get ride by id.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - rides
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ride'
+          description: ''
+    post:
+      operationId: rides_create_2
+      description: Update ride by id
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - rides
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ride'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Ride'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Ride'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ride'
+          description: ''
+  /api/search/:
+    post:
+      operationId: search_create
+      description: Search for a ride.
+      tags:
+      - search
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ride'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Ride'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Ride'
+        required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ride'
+          description: ''
+components:
+  schemas:
+    Authenticate:
+      type: object
+      properties:
+        access_token:
+          type: string
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+        first_name:
+          type: string
+          readOnly: true
+        last_name:
+          type: string
+          readOnly: true
+      required:
+      - access_token
+      - first_name
+      - last_name
+      - username
+    Path:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        start_location_place_id:
+          type: string
+          readOnly: true
+        start_location_name:
+          type: string
+          readOnly: true
+        start_coords:
+          type: string
+          readOnly: true
+        end_location_place_id:
+          type: string
+          readOnly: true
+        end_location_name:
+          type: string
+          readOnly: true
+        end_coords:
+          type: string
+          readOnly: true
+      required:
+      - end_coords
+      - end_location_name
+      - end_location_place_id
+      - id
+      - start_coords
+      - start_location_name
+      - start_location_place_id
+    Prompt:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        question_name:
+          type: string
+          readOnly: true
+        question_placeholder:
+          type: string
+          readOnly: true
+          nullable: true
+      required:
+      - id
+      - question_name
+      - question_placeholder
+    Request:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        approvee:
+          $ref: '#/components/schemas/User'
+        approver:
+          $ref: '#/components/schemas/User'
+        ride:
+          $ref: '#/components/schemas/SimpleRide'
+        approved:
+          type: boolean
+          readOnly: true
+          nullable: true
+        timestamp:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - approved
+      - approvee
+      - approver
+      - id
+      - ride
+      - timestamp
+    Ride:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        creator:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        max_travelers:
+          type: integer
+          readOnly: true
+        min_travelers:
+          type: integer
+          readOnly: true
+        departure_datetime:
+          type: string
+          format: date-time
+          readOnly: true
+        description:
+          type: string
+          readOnly: true
+          nullable: true
+        driver:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        is_flexible:
+          type: boolean
+          readOnly: true
+        riders:
+          type: string
+          readOnly: true
+        estimated_cost:
+          type: number
+          format: double
+          readOnly: true
+          nullable: true
+        path:
+          $ref: '#/components/schemas/Path'
+        type:
+          allOf:
+          - $ref: '#/components/schemas/TypeEnum'
+          readOnly: true
+      required:
+      - creator
+      - departure_datetime
+      - description
+      - driver
+      - estimated_cost
+      - id
+      - is_flexible
+      - max_travelers
+      - min_travelers
+      - path
+      - riders
+      - type
+    SimplePerson:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        netid:
+          type: string
+          readOnly: true
+        first_name:
+          type: string
+        last_name:
+          type: string
+        profile_pic_url:
+          type: string
+          readOnly: true
+          nullable: true
+        grade:
+          type: string
+          readOnly: true
+          nullable: true
+        pronouns:
+          type: string
+          readOnly: true
+          nullable: true
+        prompts:
+          type: string
+          readOnly: true
+      required:
+      - first_name
+      - grade
+      - id
+      - last_name
+      - netid
+      - profile_pic_url
+      - prompts
+      - pronouns
+    SimpleRide:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        description:
+          type: string
+          readOnly: true
+          nullable: true
+        departure_datetime:
+          type: string
+          format: date-time
+          readOnly: true
+        driver:
+          $ref: '#/components/schemas/SimplePerson'
+        min_travelers:
+          type: integer
+          readOnly: true
+        max_travelers:
+          type: integer
+          readOnly: true
+        path:
+          $ref: '#/components/schemas/Path'
+        type:
+          allOf:
+          - $ref: '#/components/schemas/TypeEnum'
+          readOnly: true
+      required:
+      - departure_datetime
+      - description
+      - driver
+      - id
+      - max_travelers
+      - min_travelers
+      - path
+      - type
+    TypeEnum:
+      enum:
+      - rideshare
+      - studentdriver
+      type: string
+      description: |-
+        * `rideshare` - Rideshare
+        * `studentdriver` - Student Driver
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        netid:
+          type: string
+        first_name:
+          type: string
+          readOnly: true
+        last_name:
+          type: string
+          readOnly: true
+        phone_number:
+          type: string
+        grade:
+          type: string
+        profile_pic_url:
+          type: string
+        pronouns:
+          type: string
+        prompts:
+          type: string
+          readOnly: true
+        rides:
+          type: string
+          readOnly: true
+      required:
+      - first_name
+      - grade
+      - id
+      - last_name
+      - netid
+      - phone_number
+      - profile_pic_url
+      - prompts
+      - pronouns
+      - rides
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"
