@@ -28,7 +28,7 @@ DEBUG = environ.get("DJANGO_DEBUG")
 
 ALLOWED_HOSTS = environ.get("DJANGO_ALLOWED_HOSTS").split(",")
 
-POSTGRES = False # TODO: change
+POSTGRES = environ.get("POSTGRES") == "True"
 
 # Application definition
 
