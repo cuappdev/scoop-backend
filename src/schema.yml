@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
-  title: Rideshare API
+  title: Scooped API
   version: 0.0.0
 paths:
   /api/:
     get:
-      operationId: root_retrieve
+      operationId: api_retrieve
       parameters:
       - in: query
         name: format
@@ -15,6 +15,8 @@ paths:
           - corejson
           - openapi
           - swagger
+      tags:
+      - api
       security:
       - tokenAuth: []
       - {}
@@ -23,10 +25,10 @@ paths:
           description: No response body
   /api/authenticate/:
     post:
-      operationId: authenticate_create
+      operationId: api_authenticate_create
       description: Authenticate the current user.
       tags:
-      - authenticate
+      - api
       requestBody:
         content:
           application/json:
@@ -50,10 +52,10 @@ paths:
           description: ''
   /api/dev/:
     get:
-      operationId: dev_retrieve
+      operationId: api_dev_retrieve
       description: Get all users.
       tags:
-      - dev
+      - api
       security:
       - tokenAuth: []
       responses:
@@ -64,11 +66,11 @@ paths:
                 $ref: '#/components/schemas/Authenticate'
           description: ''
     post:
-      operationId: dev_create
+      operationId: api_dev_create
       description: Create test user or return access token for test user if `id` is
         provided.
       tags:
-      - dev
+      - api
       requestBody:
         content:
           application/json:
@@ -91,10 +93,10 @@ paths:
           description: ''
   /api/me/:
     get:
-      operationId: me_retrieve
+      operationId: api_me_retrieve
       description: Get current authenticated user.
       tags:
-      - me
+      - api
       security:
       - tokenAuth: []
       responses:
@@ -105,10 +107,10 @@ paths:
                 $ref: '#/components/schemas/User'
           description: ''
     post:
-      operationId: me_create
+      operationId: api_me_create
       description: Update current authenticated user.
       tags:
-      - me
+      - api
       requestBody:
         content:
           application/json:
@@ -132,10 +134,10 @@ paths:
           description: ''
   /api/prompts/:
     get:
-      operationId: prompts_retrieve
+      operationId: api_prompts_retrieve
       description: Get all prompts.
       tags:
-      - prompts
+      - api
       security:
       - tokenAuth: []
       responses:
@@ -146,10 +148,10 @@ paths:
                 $ref: '#/components/schemas/Prompt'
           description: ''
     post:
-      operationId: prompts_create
+      operationId: api_prompts_create
       description: Create a prompt.
       tags:
-      - prompts
+      - api
       requestBody:
         content:
           application/json:
@@ -172,7 +174,7 @@ paths:
           description: ''
   /api/prompts/{id}/:
     get:
-      operationId: prompts_retrieve_2
+      operationId: api_prompts_retrieve_2
       description: Get prompt by id.
       parameters:
       - in: path
@@ -181,7 +183,7 @@ paths:
           type: integer
         required: true
       tags:
-      - prompts
+      - api
       security:
       - tokenAuth: []
       responses:
@@ -192,7 +194,7 @@ paths:
                 $ref: '#/components/schemas/Prompt'
           description: ''
     post:
-      operationId: prompts_create_2
+      operationId: api_prompts_create_2
       description: Update prompt by id.
       parameters:
       - in: path
@@ -201,7 +203,7 @@ paths:
           type: integer
         required: true
       tags:
-      - prompts
+      - api
       requestBody:
         content:
           application/json:
@@ -223,7 +225,7 @@ paths:
                 $ref: '#/components/schemas/Prompt'
           description: ''
     delete:
-      operationId: prompts_destroy
+      operationId: api_prompts_destroy
       description: Delete prompt by id.
       parameters:
       - in: path
@@ -232,7 +234,7 @@ paths:
           type: integer
         required: true
       tags:
-      - prompts
+      - api
       security:
       - tokenAuth: []
       responses:
@@ -240,10 +242,10 @@ paths:
           description: No response body
   /api/requests/:
     get:
-      operationId: requests_retrieve
+      operationId: api_requests_retrieve
       description: Get all of a user's active requests.
       tags:
-      - requests
+      - api
       security:
       - tokenAuth: []
       responses:
@@ -254,10 +256,10 @@ paths:
                 $ref: '#/components/schemas/Request'
           description: ''
     post:
-      operationId: requests_create
+      operationId: api_requests_create
       description: Create a request.
       tags:
-      - requests
+      - api
       requestBody:
         content:
           application/json:
@@ -281,7 +283,7 @@ paths:
           description: ''
   /api/requests/{id}/:
     post:
-      operationId: requests_create_2
+      operationId: api_requests_create_2
       description: Update a request.
       parameters:
       - in: path
@@ -290,7 +292,7 @@ paths:
           type: integer
         required: true
       tags:
-      - requests
+      - api
       requestBody:
         content:
           application/json:
@@ -314,10 +316,10 @@ paths:
           description: ''
   /api/rides/:
     get:
-      operationId: rides_retrieve
+      operationId: api_rides_retrieve
       description: Get all rides.
       tags:
-      - rides
+      - api
       security:
       - tokenAuth: []
       responses:
@@ -328,10 +330,10 @@ paths:
                 $ref: '#/components/schemas/Ride'
           description: ''
     post:
-      operationId: rides_create
+      operationId: api_rides_create
       description: Create a ride.
       tags:
-      - rides
+      - api
       requestBody:
         content:
           application/json:
@@ -355,7 +357,7 @@ paths:
           description: ''
   /api/rides/{id}/:
     get:
-      operationId: rides_retrieve_2
+      operationId: api_rides_retrieve_2
       description: Get ride by id.
       parameters:
       - in: path
@@ -364,7 +366,7 @@ paths:
           type: integer
         required: true
       tags:
-      - rides
+      - api
       security:
       - tokenAuth: []
       responses:
@@ -375,7 +377,7 @@ paths:
                 $ref: '#/components/schemas/Ride'
           description: ''
     post:
-      operationId: rides_create_2
+      operationId: api_rides_create_2
       description: Update ride by id
       parameters:
       - in: path
@@ -384,7 +386,7 @@ paths:
           type: integer
         required: true
       tags:
-      - rides
+      - api
       requestBody:
         content:
           application/json:
@@ -408,10 +410,10 @@ paths:
           description: ''
   /api/search/:
     post:
-      operationId: search_create
+      operationId: api_search_create
       description: Search for a ride.
       tags:
-      - search
+      - api
       requestBody:
         content:
           application/json:
@@ -432,6 +434,149 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Ride'
+          description: ''
+  /schema/:
+    get:
+      operationId: schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - schema
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
           description: ''
 components:
   schemas:
