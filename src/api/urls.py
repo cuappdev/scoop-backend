@@ -7,7 +7,9 @@ from person.views import MeView
 from ride.views import RidesView
 from ride.views import RideView
 from ride.views import SearchView
+from rest_framework_swagger.views import get_swagger_view
 
+schema_view = get_swagger_view(title='Pastebin API')
 
 urlpatterns = [
     path("authenticate/", AuthenticateView.as_view(), name="authenticate"),
