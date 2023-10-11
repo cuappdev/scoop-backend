@@ -9,8 +9,10 @@ class Person(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, unique=True, default=None
     )
+    fcm_registration_token = models.TextField(default=None, null=True)
     grade = models.CharField(max_length=20, default=None, null=True)
     profile_pic_url = models.TextField(default=None, null=True)
     pronouns = models.CharField(max_length=20, default=None, null=True)
     prompt_questions = models.ManyToManyField(Prompt, default=None, blank=True)
     prompt_answers = models.TextField(default=None, null=True)
+    

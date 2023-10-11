@@ -9,6 +9,7 @@ from rest_framework import status
 from .controllers.authenticate_controller import AuthenticateController
 from .controllers.developer_controller import DeveloperController
 from .controllers.update_controller import UpdatePersonController
+from .controllers.send_message_controller import SendMessageController
 from .serializers import AuthenticateSerializer
 from .serializers import UserSerializer
 
@@ -64,3 +65,8 @@ class DeveloperView(generics.GenericAPIView):
         except json.JSONDecodeError:
             data = request.data
         return DeveloperController(request, data, self.serializer_class, id).process()
+    
+class SendMessageView(generics.GenericAPIView):
+    def post(self, request, id):
+        """Send push notification to user by user id."""
+        return SendMessageController(request.user, request.data, id).process()

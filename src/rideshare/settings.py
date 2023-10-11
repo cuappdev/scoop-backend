@@ -12,6 +12,22 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from os import environ
 from pathlib import Path
+from firebase_admin import initialize_app, credentials
+from google.auth import load_credentials_from_file
+from google.oauth2.service_account import Credentials
+
+
+# create a custom Credentials class to load a non-default google service account JSON
+class CustomFirebaseCredentials(credentials.ApplicationDefault):
+    def __init__(self, account_file_path: str):
+        super().__init__()
+        self._account_file_path = account_file_path
+
+    def _load_credential(self):
+        if not self._g_credential:
+            self._g_credential, self._project_id = load_credentials_from_file(self._account_file_path,
+                                                                              scopes=credentials._scopes)
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -42,6 +58,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "rest_framework",
     "drf_spectacular",
+    "fcm_django",
     "person",
     "ride",
     "path",
@@ -91,6 +108,19 @@ SPECTACULAR_SETTINGS = {
     'TITLE': 'Scooped API',
 }
 
+FIREBASE_APP = initialize_app()
+
+custom_credentials = CustomFirebaseCredentials(environ.get('CUSTOM_GOOGLE_APPLICATION_CREDENTIALS'))
+FIREBASE_MESSAGING_APP = initialize_app(custom_credentials, name='messaging')
+
+FCM_DJANGO_SETTINGS = {
+    "APP_VERBOSE_NAME": "scooped",
+    "DEFAULT_FIREBASE_APP": FIREBASE_MESSAGING_APP,
+    # devices to which notifications cannot be sent,
+     # are deleted upon receiving error response from FCM
+     # default: False
+    "DELETE_INACTIVE_DEVICES": True,
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases

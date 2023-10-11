@@ -5,6 +5,7 @@ from api.utils import success_response
 from api.utils import update
 from django.contrib.auth.models import User
 from prompts.models import Prompt
+from fcm_django.models import FCMDevice
 
 from ..utils import remove_profile_pic
 from ..utils import upload_profile_pic
@@ -21,6 +22,7 @@ class UpdatePersonController:
         netid = self._data.get("netid")
         first_name = self._data.get("first_name")
         last_name = self._data.get("last_name")
+        fcm_registration_token = self._data.get("fcm_registration_token")
         grade = self._data.get("grade")
         phone_number = self._data.get("phone_number")
         profile_pic_base64 = self._data.get("profile_pic_base64")
@@ -43,6 +45,19 @@ class UpdatePersonController:
 
             self._person.prompt_questions.set(prompt_ids)
             update(self._person, "prompt_answers", json.dumps(prompt_answers))
+
+        if fcm_registration_token is not None and self._person.fcm_registration_token != fcm_registration_token:
+            FCMDevice.objects.filter(
+                registration_id=self._person.fcm_registration_token
+            ).delete()
+            self._person.fcm_registration_token = fcm_registration_token
+            fcm_device = FCMDevice.objects.create(
+                registration_id=fcm_registration_token,
+                cloud_message_type="FCM",
+                user=self._user,
+            )
+            self._user.fcm_device = fcm_device
+
 
         update(self._person, "netid", netid)
         update(self._user, "first_name", first_name)
