@@ -51,6 +51,14 @@ class RideView(generics.GenericAPIView):
             data = request.data
         return UpdateRideController(request, data, self.serializer_class, id).process()
 
+    def delete(self, request, id):
+        """Delete ride by id"""
+        if not Ride.objects.filter(id=id).exists():
+            return failure_response("Ride does not exist")
+        ride = Ride.objects.get(id=id)
+        ride.delete()
+        return success_response("Ride deleted", status.HTTP_200_OK)
+
 
 class SearchView(generics.GenericAPIView):
     serializer_class = RideSerializer
