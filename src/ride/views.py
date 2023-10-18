@@ -18,9 +18,10 @@ class RidesView(generics.GenericAPIView):
     permission_classes = api_settings.CONSUMER_PERMISSIONS
 
     def get(self, request):
-        """Get all rides."""
+        """Get all rides from not blocked users."""
+        blocked_users = request.user.blocked_users.all()
         return success_response(
-            self.serializer_class(Ride.objects.all(), many=True).data
+            self.serializer_class(Ride.objects.all().exclude(creator__in=blocked_users), many=True).data,
         )
 
     def post(self, request):
