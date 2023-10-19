@@ -9,6 +9,7 @@ from rest_framework import status
 from .controllers.create_ride_controller import CreateRideController
 from .controllers.search_ride_controller import SearchRideController
 from .controllers.update_ride_controller import UpdateRideController
+from ride.utils import MultipleFieldLookupMixin
 from .models import Ride
 from .serializers import RideSerializer
 
@@ -52,15 +53,17 @@ class RideView(generics.GenericAPIView):
         return UpdateRideController(request, data, self.serializer_class, id).process()
 
 
-class SearchView(generics.GenericAPIView):
+class SearchView(MultipleFieldLookupMixin, generics.RetrieveAPIView):
+    queryset = Ride.objects.all()
     serializer_class = RideSerializer
-    permission_classes = api_settings.CONSUMER_PERMISSIONS
+    lookup_fields = ['depart', 'start', 'end', 'radius']
 
-    def post(self, request):
+    def get(self, request, depart, start, end, radius):
         """Search for a ride."""
-        try:
-            data = json.loads(request.body)
-        except json.JSONDecodeError:
-            data = request.data
-
-        return SearchRideController(data, request, self.serializer_class).process()
+        data = {
+            "departure_datetime": depart,
+            "start_location_place_id": start,
+            "end_location_place_id": end,
+            "radius": radius
+        }
+        return SearchRideController(data, self.serializer_class).process()

@@ -13,8 +13,7 @@ from ..models import Ride
 
 
 class SearchRideController:
-    def __init__(self, data, request, serializer):
-        self._request = request
+    def __init__(self, data, serializer):
         self._data = data
         self._serializer = serializer
 
