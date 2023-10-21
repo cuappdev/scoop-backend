@@ -20,6 +20,8 @@ class SearchRideController:
 
     def process(self):
         departure_datetime = self._data.get("departure_datetime")
+        days_before = self._data.get("days_before")
+        days_after = self._data.get("days_after")
         start_location_place_id = self._data.get("start_location_place_id")
         end_location_place_id = self._data.get("end_location_place_id")
         radius = self._data.get("radius")
@@ -67,13 +69,13 @@ class SearchRideController:
             departure_datetime
         ).astimezone(tz)
 
-        departure_yesterday = departure_datetime_object - datetime.timedelta(days=1)
-        departure_tomorrow = departure_datetime_object + datetime.timedelta(days=1)
+        departure_before = departure_datetime_object - datetime.timedelta(days=days_before)
+        departure_after = departure_datetime_object + datetime.timedelta(days=days_after)
 
         all_rides = Ride.objects.filter(
             path__in=paths,
-            departure_datetime__gte=departure_yesterday,
-            departure_datetime__lte=departure_tomorrow,
+            departure_datetime__gte=departure_before,
+            departure_datetime__lte=departure_after,
         )
 
         # Sort results based on location and time proximity
