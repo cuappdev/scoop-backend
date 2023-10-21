@@ -62,13 +62,16 @@ class RideView(generics.GenericAPIView):
 
 class SearchView(generics.GenericAPIView):
     serializer_class = RideSerializer
-    permission_classes = api_settings.CONSUMER_PERMISSIONS
+    lookup_fields = ['depart', 'daysbefore', 'daysafter', 'start', 'end', 'radius']
 
-    def post(self, request):
+    def get(self, request, depart, daysbefore, daysafter, start, end, radius):
         """Search for a ride."""
-        try:
-            data = json.loads(request.body)
-        except json.JSONDecodeError:
-            data = request.data
-
-        return SearchRideController(data, request, self.serializer_class).process()
+        data = {
+            "departure_datetime": depart,
+            "days_before": daysbefore,
+            "days_after": daysafter,
+            "start_location_place_id": start,
+            "end_location_place_id": end,
+            "radius": radius
+        }
+        return SearchRideController(data, self.serializer_class).process()
