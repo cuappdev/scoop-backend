@@ -46,6 +46,11 @@ class MeView(generics.GenericAPIView):
             request.user, data, self.serializer_class
         ).process()
 
+    def delete(self, request):
+        """Delete current authenticated user."""
+        request.user.delete()
+        return success_response("User deleted", status.HTTP_200_OK)
+
 
 class DeveloperView(generics.GenericAPIView):
     serializer_class = AuthenticateSerializer

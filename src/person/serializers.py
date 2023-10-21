@@ -33,8 +33,10 @@ class UserSerializer(serializers.ModelSerializer):
     prompts = SerializerMethodField("get_prompts")
     rides = SerializerMethodField("get_rides")
 
-    def get_prompts(self, user):
-        prompt_questions = user.person.prompt_questions.all()
+    def get_prompts(self, user: User):
+        prompt_questions = sorted(
+            user.person.prompt_questions.all(), key=lambda x: x.id
+        )
         prompt_answers = user.person.prompt_answers
         if prompt_answers is None:
             return []
