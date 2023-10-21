@@ -62,6 +62,8 @@ class UserSerializer(serializers.ModelSerializer):
         for ride in rides:
             if ride.departure_datetime >= timezone.now():
                 active_rides.add(ride)
+            else:
+                ride.delete()
         return [SimpleRideSerializer(ride).data for ride in active_rides]
 
     class Meta:
