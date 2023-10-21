@@ -719,9 +719,9 @@ components:
           nullable: true
         path:
           $ref: '#/components/schemas/Path'
-        type:
+        ride_type:
           allOf:
-          - $ref: '#/components/schemas/TypeEnum'
+          - $ref: '#/components/schemas/RideTypeEnum'
           readOnly: true
       required:
       - creator
@@ -735,7 +735,7 @@ components:
       - min_travelers
       - path
       - riders
-      - type
+      - ride_type
     SimplePerson:
       type: object
       properties:
@@ -797,9 +797,9 @@ components:
           readOnly: true
         path:
           $ref: '#/components/schemas/Path'
-        type:
+        ride_type:
           allOf:
-          - $ref: '#/components/schemas/TypeEnum'
+          - $ref: '#/components/schemas/RideTypeEnum'
           readOnly: true
       required:
       - departure_datetime
@@ -809,8 +809,8 @@ components:
       - max_travelers
       - min_travelers
       - path
-      - type
-    TypeEnum:
+      - ride_type
+    RideTypeEnum:
       enum:
       - rideshare
       - studentdriver
