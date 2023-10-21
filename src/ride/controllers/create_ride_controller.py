@@ -118,7 +118,7 @@ class CreateRideController:
             description=description,
             departure_datetime=departure_datetime,
             is_flexible=is_flexible,
-            type=ride_type,
+            ride_type=ride_type,
             path=path,
         )
         ride.save()
