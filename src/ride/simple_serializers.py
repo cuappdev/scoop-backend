@@ -19,6 +19,6 @@ class SimpleRideSerializer(serializers.ModelSerializer):
             "min_travelers",
             "max_travelers",
             "path",
-            "type",
+            "ride_type",
         )
         read_only_fields = fields
