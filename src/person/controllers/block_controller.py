@@ -22,6 +22,12 @@ class BlockController:
         user.save()
         return user, status.HTTP_200_OK
 
+    def unblock(self, user, blocked_user):
+        """Unblock `blocked_user` for `user`."""
+        user.blocked_users.remove(blocked_user)
+        user.save()
+        return user, status.HTTP_200_OK
+
     def get_blocked_users(self, user):
         """Get blocked users for `user`."""
         return user.blocked_users.all()

@@ -49,6 +49,21 @@ class BlockView(generics.GenericAPIView):
         ).process()
 
 
+class UnblockView(generics.GenericAPIView):
+    serializer_class = UserSerializer
+    permission_classes = api_settings.CONSUMER_PERMISSIONS
+
+    def post(self, request):
+        """Unblock a user."""
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            data = request.data
+        return BlockController(
+            request.user, data, self.serializer_class
+        ).process()
+
+
 class MeView(generics.GenericAPIView):
     serializer_class = UserSerializer
     permission_classes = api_settings.CONSUMER_PERMISSIONS
