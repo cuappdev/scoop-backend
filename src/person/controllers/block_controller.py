@@ -1,13 +1,6 @@
-import api.settings as api_settings
 from api.utils import failure_response
 from api.utils import success_response
-from django.contrib.auth.models import User
-from django.utils import timezone
-from google.auth.transport import requests
-from google.oauth2 import id_token
-from person.models import Person
 from rest_framework import status
-from rest_framework.authtoken.models import Token
 
 
 class BlockController:
@@ -18,13 +11,15 @@ class BlockController:
 
     def block(self, user, blocked_user):
         """Block `blocked_user` for `user`."""
-        user.blocked_users.add(blocked_user)
+        if blocked_user not in user.blocked_users.all():
+            user.blocked_users.add(blocked_user)
         user.save()
         return user, status.HTTP_200_OK
 
     def unblock(self, user, blocked_user):
         """Unblock `blocked_user` for `user`."""
-        user.blocked_users.remove(blocked_user)
+        if blocked_user in user.blocked_users.all():
+            user.blocked_users.remove(blocked_user)
         user.save()
         return user, status.HTTP_200_OK
 
