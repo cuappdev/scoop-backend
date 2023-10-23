@@ -32,6 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
     phone_number = serializers.CharField(source="person.phone_number")
     prompts = SerializerMethodField("get_prompts")
     rides = SerializerMethodField("get_rides")
+    blocked_users = SerializerMethodField("get_blocked_users")
 
     def get_prompts(self, user: User):
         prompt_questions = sorted(
@@ -68,6 +69,9 @@ class UserSerializer(serializers.ModelSerializer):
                 ride.delete()
         return [SimpleRideSerializer(ride).data for ride in active_rides]
 
+    def get_blocked_users(self, user):
+        return map(lambda u: u.id, user.person.blocked_users.all())
+
     class Meta:
         model = User
         fields = (
@@ -81,5 +85,6 @@ class UserSerializer(serializers.ModelSerializer):
             "pronouns",
             "prompts",
             "rides",
+            "blocked_users",
         )
         read_only_fields = fields

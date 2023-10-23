@@ -27,6 +27,10 @@ class BlockController:
         """Get blocked users for `user`."""
         return user.blocked_users.all()
 
+    def get_if_blocked(self, user, blocked_user):
+        """Get if `blocked_user` is blocked for `user`."""
+        return blocked_user in user.blocked_users.all()
+
     def process(self):
         """Process the request."""
         serializer = self._serializer(data=self._data)
