@@ -3,6 +3,7 @@
 import datetime
 from django.db import migrations, models
 from django.utils.timezone import utc
+import django.utils.timezone
 
 
 class Migration(migrations.Migration):
@@ -15,6 +16,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='request',
             name='timestamp',
-            field=models.DateTimeField(default=datetime.datetime(2023, 10, 23, 0, 3, 16, 951390, tzinfo=utc)),
+            field=models.DateTimeField(default=django.utils.timezone.now),
         ),
     ]
