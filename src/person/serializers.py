@@ -6,6 +6,8 @@ from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 from ride.simple_serializers import SimpleRideSerializer
 
+from .models import Person
+
 
 class AuthenticateSerializer(serializers.ModelSerializer):
     access_token = serializers.SerializerMethodField(method_name="get_access_token")

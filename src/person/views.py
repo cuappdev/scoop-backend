@@ -9,7 +9,7 @@ from rest_framework import status
 from .controllers.authenticate_controller import AuthenticateController
 from .controllers.developer_controller import DeveloperController
 from .controllers.update_controller import UpdatePersonController
-from .controllers.block_controller import BlockController
+from .controllers.block_controller import BlockController, UnblockController
 from .serializers import AuthenticateSerializer
 from .serializers import UserSerializer
 
@@ -34,7 +34,7 @@ class BlockView(generics.GenericAPIView):
     def get(self, request):
         """Get blocked users for current authenticated user."""
         return success_response(
-            self.serializer_class(request.user.blocked_users.all(), many=True).data,
+            self.serializer_class(map(lambda p: p.user, request.user.person.blocked_users.all()), many=True).data,
             status.HTTP_200_OK,
         )
 
@@ -59,7 +59,7 @@ class UnblockView(generics.GenericAPIView):
             data = json.loads(request.body)
         except json.JSONDecodeError:
             data = request.data
-        return BlockController(
+        return UnblockController(
             request.user, data, self.serializer_class
         ).process()
 
