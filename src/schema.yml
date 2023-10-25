@@ -3,26 +3,6 @@ info:
   title: Scooped API
   version: 0.0.0
 paths:
-  /api/:
-    get:
-      operationId: api_retrieve
-      parameters:
-      - in: query
-        name: format
-        schema:
-          type: string
-          enum:
-          - corejson
-          - openapi
-          - swagger
-      tags:
-      - api
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          description: No response body
   /api/authenticate/:
     post:
       operationId: api_authenticate_create
@@ -132,6 +112,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
+    delete:
+      operationId: api_me_destroy
+      description: Delete current authenticated user.
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/prompts/:
     get:
       operationId: api_prompts_retrieve
@@ -317,7 +307,7 @@ paths:
   /api/rides/:
     get:
       operationId: api_rides_retrieve
-      description: Get all rides.
+      description: Get all rides in the future.
       tags:
       - api
       security:
@@ -399,6 +389,37 @@ paths:
             schema:
               $ref: '#/components/schemas/Ride'
         required: true
+      security:
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ride'
+          description: ''
+    delete:
+      operationId: api_rides_destroy
+      description: Delete ride by id
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/rides/archive/:
+    get:
+      operationId: api_rides_archive_retrieve
+      description: Get all rides, including already-departed rides.
+      tags:
+      - api
       security:
       - tokenAuth: []
       responses:
@@ -719,9 +740,9 @@ components:
           nullable: true
         path:
           $ref: '#/components/schemas/Path'
-        type:
+        ride_type:
           allOf:
-          - $ref: '#/components/schemas/TypeEnum'
+          - $ref: '#/components/schemas/RideTypeEnum'
           readOnly: true
       required:
       - creator
@@ -734,8 +755,16 @@ components:
       - max_travelers
       - min_travelers
       - path
+      - ride_type
       - riders
-      - type
+    RideTypeEnum:
+      enum:
+      - rideshare
+      - studentdriver
+      type: string
+      description: |-
+        * `rideshare` - Rideshare
+        * `studentdriver` - Student Driver
     SimplePerson:
       type: object
       properties:
@@ -797,9 +826,9 @@ components:
           readOnly: true
         path:
           $ref: '#/components/schemas/Path'
-        type:
+        ride_type:
           allOf:
-          - $ref: '#/components/schemas/TypeEnum'
+          - $ref: '#/components/schemas/RideTypeEnum'
           readOnly: true
       required:
       - departure_datetime
@@ -809,15 +838,7 @@ components:
       - max_travelers
       - min_travelers
       - path
-      - type
-    TypeEnum:
-      enum:
-      - rideshare
-      - studentdriver
-      type: string
-      description: |-
-        * `rideshare` - Rideshare
-        * `studentdriver` - Student Driver
+      - ride_type
     User:
       type: object
       properties:
