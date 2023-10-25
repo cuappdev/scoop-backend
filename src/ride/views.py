@@ -5,6 +5,7 @@ from api.utils import failure_response
 from api.utils import success_response
 from rest_framework import generics
 from rest_framework import status
+from django.utils import timezone
 
 from .controllers.create_ride_controller import CreateRideController
 from .controllers.search_ride_controller import SearchRideController
@@ -19,9 +20,9 @@ class RidesView(generics.GenericAPIView):
     permission_classes = api_settings.CONSUMER_PERMISSIONS
 
     def get(self, request):
-        """Get all rides."""
+        """Get all rides in the future."""
         return success_response(
-            self.serializer_class(Ride.objects.all(), many=True).data
+            self.serializer_class(Ride.objects.filter(departure_datetime__gt=timezone.now()), many=True).data
         )
 
     def post(self, request):
@@ -31,6 +32,17 @@ class RidesView(generics.GenericAPIView):
         except json.JSONDecodeError:
             data = request.data
         return CreateRideController(request, data, self.serializer_class).process()
+    
+
+class RidesArchiveView(generics.GenericAPIView):
+    serializer_class = RideSerializer
+    permission_classes = api_settings.CONSUMER_PERMISSIONS
+
+    def get(self, request):
+        """Get all rides, including already-departed rides."""
+        return success_response(
+            self.serializer_class(Ride.objects.all(), many=True).data
+        )
 
 
 class RideView(generics.GenericAPIView):

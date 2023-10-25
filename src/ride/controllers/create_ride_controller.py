@@ -28,7 +28,7 @@ class CreateRideController:
         start_location_name = self._data.get("start_location_name")
         end_location_place_id = self._data.get("end_location_place_id")
         end_location_name = self._data.get("end_location_name")
-        type = self._data.get("type")
+        ride_type = self._data.get("type")
 
         # Verify all required information is provided
         if (
@@ -42,7 +42,7 @@ class CreateRideController:
         if (
             is_flexible is None
             or departure_datetime is None
-            or type is None
+            or ride_type is None
             or min_travelers is None
             or max_travelers is None
             or creator is None
@@ -118,7 +118,7 @@ class CreateRideController:
             description=description,
             departure_datetime=departure_datetime,
             is_flexible=is_flexible,
-            type=type,
+            ride_type=ride_type,
             path=path,
         )
         ride.save()
