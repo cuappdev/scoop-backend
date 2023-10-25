@@ -10,6 +10,7 @@ from django.utils import timezone
 from .controllers.create_ride_controller import CreateRideController
 from .controllers.search_ride_controller import SearchRideController
 from .controllers.update_ride_controller import UpdateRideController
+from .controllers.recent_rides_controller import RecentRidesController
 from ride.utils import MultipleFieldLookupMixin
 from .models import Ride
 from .serializers import RideSerializer
@@ -87,3 +88,10 @@ class SearchView(MultipleFieldLookupMixin, generics.RetrieveAPIView):
             "radius": radius
         }
         return SearchRideController(data, self.serializer_class).process()
+    
+class RecentView(generics.GenericAPIView):
+    serializer_class = RideSerializer
+
+    def get(self, request):
+        """Get recent rides."""
+        return RecentRidesController(self.serializer_class).process()
