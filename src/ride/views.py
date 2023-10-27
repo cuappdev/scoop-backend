@@ -14,6 +14,7 @@ from .controllers.recent_rides_controller import RecentRidesController
 from ride.utils import MultipleFieldLookupMixin
 from .models import Ride
 from .serializers import RideSerializer
+from .simple_serializers import SimpleRideSerializer
 
 
 class RidesView(generics.GenericAPIView):
@@ -90,7 +91,7 @@ class SearchView(MultipleFieldLookupMixin, generics.RetrieveAPIView):
         return SearchRideController(data, self.serializer_class).process()
     
 class RecentView(generics.GenericAPIView):
-    serializer_class = RideSerializer
+    serializer_class = SimpleRideSerializer
 
     def get(self, request):
         """Get recent rides."""

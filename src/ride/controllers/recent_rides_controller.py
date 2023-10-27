@@ -3,6 +3,7 @@ import datetime
 from api.utils import success_response
 from rideshare.settings import TIME_ZONE
 import zoneinfo
+from django.db.models import F
 
 from ..models import Ride
 
@@ -20,6 +21,7 @@ class RecentRidesController:
         recent_rides = Ride.objects.filter(
             departure_datetime__gte=departure_start,
             departure_datetime__lte=departure_end,
+            max_travelers__gt=F("num_riders")
         )
 
         # Sort results from most recent to least
