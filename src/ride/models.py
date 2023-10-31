@@ -20,5 +20,6 @@ class Ride(models.Model):
     riders = models.ManyToManyField(Person)
     estimated_cost = models.FloatField(default=None, null=True)
     path = models.ForeignKey(Path, on_delete=models.CASCADE)
+    # test
 
     ride_type = models.CharField(max_length=20, choices=RIDE_TYPES)

@@ -70,6 +70,7 @@ class RideView(generics.GenericAPIView):
         ride = Ride.objects.get(id=id)
         ride.delete()
         return success_response("Ride deleted", status.HTTP_200_OK)
+    # test
 
 
 class SearchView(generics.GenericAPIView):
