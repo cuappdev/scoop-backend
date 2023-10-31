@@ -22,3 +22,4 @@ class Ride(models.Model):
     path = models.ForeignKey(Path, on_delete=models.CASCADE)
 
     ride_type = models.CharField(max_length=20, choices=RIDE_TYPES)
+    archived = models.BooleanField(default=False)

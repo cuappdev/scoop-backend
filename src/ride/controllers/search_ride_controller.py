@@ -74,6 +74,7 @@ class SearchRideController:
             path__in=paths,
             departure_datetime__gte=departure_last_week,
             departure_datetime__lte=departure_next_week,
+            archived=False
         )
 
         # Sort results based on location and time proximity
