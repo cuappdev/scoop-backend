@@ -17,4 +17,4 @@ class Request(models.Model):
         null=True,
     )
     approved = models.BooleanField(default=None, null=True)
-    timestamp = models.DateTimeField(default=timezone.now())
+    timestamp = models.DateTimeField(default=timezone.now)

@@ -33,8 +33,10 @@ class UserSerializer(serializers.ModelSerializer):
     prompts = SerializerMethodField("get_prompts")
     rides = SerializerMethodField("get_rides")
 
-    def get_prompts(self, user):
-        prompt_questions = user.person.prompt_questions.all()
+    def get_prompts(self, user: User):
+        prompt_questions = sorted(
+            user.person.prompt_questions.all(), key=lambda x: x.id
+        )
         prompt_answers = user.person.prompt_answers
         if prompt_answers is None:
             return []
@@ -62,8 +64,6 @@ class UserSerializer(serializers.ModelSerializer):
         for ride in rides:
             if ride.departure_datetime >= timezone.now():
                 active_rides.add(ride)
-            else:
-                ride.delete()
         return [SimpleRideSerializer(ride).data for ride in active_rides]
 
     class Meta:

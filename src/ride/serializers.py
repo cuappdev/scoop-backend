@@ -6,9 +6,9 @@ from ride.models import Ride
 
 
 class RideSerializer(serializers.ModelSerializer):
-    creator = SerializerMethodField("get_creator")
-    driver = SerializerMethodField("get_driver")
-    riders = SerializerMethodField("get_riders")
+    creator: UserSerializer = SerializerMethodField("get_creator")
+    driver: UserSerializer = SerializerMethodField("get_driver")
+    riders: list[UserSerializer] = SerializerMethodField("get_riders")
     path = PathSerializer()
 
     class Meta:
@@ -25,19 +25,19 @@ class RideSerializer(serializers.ModelSerializer):
             "riders",
             "estimated_cost",
             "path",
-            "type",
+            "ride_type",
         )
         read_only_fields = fields
 
-    def get_creator(self, ride):
+    def get_creator(self, ride) -> UserSerializer:
         return (
             UserSerializer(ride.creator.user).data if ride.creator is not None else None
         )
 
-    def get_driver(self, ride):
+    def get_driver(self, ride) -> UserSerializer:
         return (
             UserSerializer(ride.driver.user).data if ride.driver is not None else None
         )
 
-    def get_riders(self, ride):
+    def get_riders(self, ride) -> list[UserSerializer]:
         return [UserSerializer(rider.user).data for rider in ride.riders.all()]

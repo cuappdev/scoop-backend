@@ -66,13 +66,13 @@ class SearchRideController:
             departure_datetime
         ).astimezone(tz)
 
-        departure_yesterday = departure_datetime_object - datetime.timedelta(days=1)
-        departure_tomorrow = departure_datetime_object + datetime.timedelta(days=1)
+        departure_last_week = departure_datetime_object - datetime.timedelta(days=7)
+        departure_next_week = departure_datetime_object + datetime.timedelta(days=7)
 
         all_rides = Ride.objects.filter(
             path__in=paths,
-            departure_datetime__gte=departure_yesterday,
-            departure_datetime__lte=departure_tomorrow,
+            departure_datetime__gte=departure_last_week,
+            departure_datetime__lte=departure_next_week,
         )
 
         # Sort results based on location and time proximity
