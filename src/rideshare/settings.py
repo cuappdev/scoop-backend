@@ -28,7 +28,7 @@ DEBUG = environ.get("DJANGO_DEBUG")
 
 ALLOWED_HOSTS = environ.get("DJANGO_ALLOWED_HOSTS").split(",")
 
-POSTGRES = environ.get("POSTGRES")
+POSTGRES = environ.get("POSTGRES") == "True"
 
 # Application definition
 
@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework.authtoken",
+    "rest_framework",
+    "drf_spectacular",
     "person",
     "ride",
     "path",
@@ -82,7 +84,13 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
     ),
+     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Scooped API',
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
