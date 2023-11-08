@@ -54,6 +54,7 @@ class RideView(generics.GenericAPIView):
 
 class SearchView(generics.GenericAPIView):
     serializer_class = RideSerializer
+    permission_classes = api_settings.CONSUMER_PERMISSIONS
     lookup_fields = ['depart', 'daysbefore', 'daysafter', 'start', 'end', 'radius']
 
     def get(self, request, depart, daysbefore, daysafter, start, end, radius):
