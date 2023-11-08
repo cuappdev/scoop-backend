@@ -11,6 +11,8 @@ from .controllers.create_ride_controller import CreateRideController
 from .controllers.search_ride_controller import SearchRideController
 from .controllers.update_ride_controller import UpdateRideController
 from ride.utils import MultipleFieldLookupMixin
+from .controllers.price_controller import PriceController
+from rest_framework.authtoken.models import Token
 from .models import Ride
 from .serializers import RideSerializer
 
@@ -80,10 +82,26 @@ class SearchView(MultipleFieldLookupMixin, generics.RetrieveAPIView):
 
     def get(self, request, time, start, end, radius):
         """Search for a ride."""
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            data = request.data
+
+        return SearchRideController(data, request, self.serializer_class).process()
+    
+class PriceView(generics.GenericAPIView):
+    serializer_class = RideSerializer
+    permission_classes = api_settings.CONSUMER_PERMISSIONS
+    lookup_fields = ['id', 'token']
+
+    def get(self, request, id, token):
+        """Get suggested price of a ride. Only the driver of the ride can get the value."""
+        ride = Ride.objects.get(id=id)
+        valid_token = str(Token.objects.get(user=ride.driver.user))
+        if token != valid_token:
+            return failure_response("Token doesn't match driver's token.")
         data = {
-            "departure_datetime": time,
-            "start_location_place_id": start,
-            "end_location_place_id": end,
-            "radius": radius
+            "path": ride.path
         }
-        return SearchRideController(data, self.serializer_class).process()
+
+        return PriceController(data, self.serializer_class).process()
