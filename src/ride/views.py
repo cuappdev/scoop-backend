@@ -13,11 +13,10 @@ from .controllers.update_ride_controller import UpdateRideController
 from ride.utils import MultipleFieldLookupMixin
 from .models import Ride
 from .serializers import RideSerializer
-from ride.simple_serializers import SimpleRideSerializer
 
 
 class RidesView(generics.GenericAPIView):
-    serializer_class = SimpleRideSerializer
+    serializer_class = RideSerializer
     permission_classes = api_settings.CONSUMER_PERMISSIONS
 
     def get(self, request):
@@ -76,7 +75,7 @@ class RideView(generics.GenericAPIView):
 
 class SearchView(MultipleFieldLookupMixin, generics.RetrieveAPIView):
     queryset = Ride.objects.all()
-    serializer_class = SimpleRideSerializer
+    serializer_class = RideSerializer
     lookup_fields = ['time', 'start', 'end', 'radius']
 
     def get(self, request, time=None, start=None, end=None, radius=0):
