@@ -20,9 +20,9 @@ class RidesView(generics.GenericAPIView):
     permission_classes = api_settings.CONSUMER_PERMISSIONS
 
     def get(self, request):
-        """Get all rides in the future."""
+        """Get all rides in the future from unblocked users."""
         return success_response(
-            self.serializer_class(Ride.objects.filter(departure_datetime__gt=timezone.now()), many=True).data
+            self.serializer_class(Ride.objects.filter(departure_datetime__gt=timezone.now()).exclude(creator__in=blocked_users), many=True).data
         )
 
     def post(self, request):
