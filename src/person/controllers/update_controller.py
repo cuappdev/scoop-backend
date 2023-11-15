@@ -58,7 +58,6 @@ class UpdatePersonController:
             )
             self._user.fcm_device = fcm_device
 
-
         update(self._person, "netid", netid)
         update(self._user, "first_name", first_name)
         update(self._user, "last_name", last_name)
