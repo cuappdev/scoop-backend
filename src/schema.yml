@@ -3,26 +3,6 @@ info:
   title: Scooped API
   version: 0.0.0
 paths:
-  /api/:
-    get:
-      operationId: api_retrieve
-      parameters:
-      - in: query
-        name: format
-        schema:
-          type: string
-          enum:
-          - corejson
-          - openapi
-          - swagger
-      tags:
-      - api
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          description: No response body
   /api/authenticate/:
     post:
       operationId: api_authenticate_create
@@ -91,6 +71,153 @@ paths:
               schema:
                 $ref: '#/components/schemas/Authenticate'
           description: ''
+  /api/devices/:
+    get:
+      operationId: api_devices_list
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FCMDevice'
+          description: ''
+    post:
+      operationId: api_devices_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FCMDevice'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FCMDevice'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FCMDevice'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FCMDevice'
+          description: ''
+  /api/devices/{registration_id}/:
+    get:
+      operationId: api_devices_retrieve
+      parameters:
+      - in: path
+        name: registration_id
+        schema:
+          type: string
+          title: Registration token
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FCMDevice'
+          description: ''
+    put:
+      operationId: api_devices_update
+      parameters:
+      - in: path
+        name: registration_id
+        schema:
+          type: string
+          title: Registration token
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FCMDevice'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FCMDevice'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FCMDevice'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FCMDevice'
+          description: ''
+    patch:
+      operationId: api_devices_partial_update
+      parameters:
+      - in: path
+        name: registration_id
+        schema:
+          type: string
+          title: Registration token
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedFCMDevice'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedFCMDevice'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedFCMDevice'
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FCMDevice'
+          description: ''
+    delete:
+      operationId: api_devices_destroy
+      parameters:
+      - in: path
+        name: registration_id
+        schema:
+          type: string
+          title: Registration token
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
   /api/me/:
     get:
       operationId: api_me_retrieve
@@ -435,6 +562,24 @@ paths:
               schema:
                 $ref: '#/components/schemas/Ride'
           description: ''
+  /api/users/{id}/message/:
+    post:
+      operationId: api_users_message_create
+      description: Send push notification to user by user id.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
   /schema/:
     get:
       operationId: schema_retrieve
@@ -602,6 +747,81 @@ components:
       - first_name
       - last_name
       - username
+    FCMDevice:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          nullable: true
+          maxLength: 255
+        registration_id:
+          type: string
+          title: Registration token
+        device_id:
+          type: string
+          nullable: true
+          description: Unique device identifier
+          maxLength: 255
+        active:
+          type: boolean
+          default: true
+          title: Is active
+          description: Inactive devices will not be sent notifications
+        date_created:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Creation date
+        type:
+          $ref: '#/components/schemas/FCMDeviceTypeEnum'
+      required:
+      - date_created
+      - id
+      - registration_id
+      - type
+    FCMDeviceTypeEnum:
+      enum:
+      - ios
+      - android
+      - web
+      type: string
+      description: |-
+        * `ios` - ios
+        * `android` - android
+        * `web` - web
+    PatchedFCMDevice:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          nullable: true
+          maxLength: 255
+        registration_id:
+          type: string
+          title: Registration token
+        device_id:
+          type: string
+          nullable: true
+          description: Unique device identifier
+          maxLength: 255
+        active:
+          type: boolean
+          default: true
+          title: Is active
+          description: Inactive devices will not be sent notifications
+        date_created:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Creation date
+        type:
+          $ref: '#/components/schemas/FCMDeviceTypeEnum'
     Path:
       type: object
       properties:
@@ -721,7 +941,7 @@ components:
           $ref: '#/components/schemas/Path'
         type:
           allOf:
-          - $ref: '#/components/schemas/TypeEnum'
+          - $ref: '#/components/schemas/Type22aEnum'
           readOnly: true
       required:
       - creator
@@ -799,7 +1019,7 @@ components:
           $ref: '#/components/schemas/Path'
         type:
           allOf:
-          - $ref: '#/components/schemas/TypeEnum'
+          - $ref: '#/components/schemas/Type22aEnum'
           readOnly: true
       required:
       - departure_datetime
@@ -810,7 +1030,7 @@ components:
       - min_travelers
       - path
       - type
-    TypeEnum:
+    Type22aEnum:
       enum:
       - rideshare
       - studentdriver
