@@ -101,6 +101,9 @@ class AuthenticateController:
             if user is None:
                 return failure_response("ID Token is not valid.", status=status_code)
         access_token = self.create_access_token(user)
+        if not Person.objects.filter(user=user):
+            person_data = {"user": user}
+            self.create_person(person_data)
         return success_response(
             self._serializer(user, context={"access_token": access_token}).data,
             status=status_code,

@@ -13,8 +13,7 @@ from ..models import Ride
 
 
 class SearchRideController:
-    def __init__(self, data, request, serializer):
-        self._request = request
+    def __init__(self, data, serializer):
         self._data = data
         self._serializer = serializer
 
@@ -38,7 +37,7 @@ class SearchRideController:
                 response.json()["result"]["geometry"]["location"]["lng"],
             )
         else:
-            return failure_response("Invalid Google Places ID")
+            return failure_response("Invalid Start Google Places ID")
 
         params["place_id"] = end_location_place_id
         response = requests.get(
@@ -50,7 +49,7 @@ class SearchRideController:
                 response.json()["result"]["geometry"]["location"]["lng"],
             )
         else:
-            return failure_response("Invalid Google Places ID")
+            return failure_response("Invalid End Google Places ID")
 
         paths = []
         for path in Path.objects.all():
@@ -75,7 +74,7 @@ class SearchRideController:
             departure_datetime__gte=departure_last_week,
             departure_datetime__lte=departure_next_week,
             archived=False
-        )
+        ).exclude(driver__in=self._request.user.blocked_users.all())  # removing blocked user rides
 
         # Sort results based on location and time proximity
         all_rides = sorted(

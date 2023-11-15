@@ -10,6 +10,7 @@ from django.utils import timezone
 from .controllers.create_ride_controller import CreateRideController
 from .controllers.search_ride_controller import SearchRideController
 from .controllers.update_ride_controller import UpdateRideController
+from ride.utils import MultipleFieldLookupMixin
 from .models import Ride
 from .serializers import RideSerializer
 
@@ -19,9 +20,9 @@ class RidesView(generics.GenericAPIView):
     permission_classes = api_settings.CONSUMER_PERMISSIONS
 
     def get(self, request):
-        """Get all rides in the future."""
+        """Get all rides in the future from unblocked users."""
         return success_response(
-            self.serializer_class(Ride.objects.filter(departure_datetime__gt=timezone.now(), archived=False), many=True).data
+            self.serializer_class(Ride.objects.filter(departure_datetime__gt=timezone.now(), archived=False).exclude(creator__in=blocked_users), many=True).data
         )
 
     def post(self, request):
@@ -75,15 +76,17 @@ class RideView(generics.GenericAPIView):
         return success_response("Ride deleted", status.HTTP_200_OK)
 
 
-class SearchView(generics.GenericAPIView):
+class SearchView(MultipleFieldLookupMixin, generics.RetrieveAPIView):
+    queryset = Ride.objects.all()
     serializer_class = RideSerializer
-    permission_classes = api_settings.CONSUMER_PERMISSIONS
+    lookup_fields = ['time', 'start', 'end', 'radius']
 
-    def post(self, request):
+    def get(self, request, time, start, end, radius):
         """Search for a ride."""
-        try:
-            data = json.loads(request.body)
-        except json.JSONDecodeError:
-            data = request.data
-
-        return SearchRideController(data, request, self.serializer_class).process()
+        data = {
+            "departure_datetime": time,
+            "start_location_place_id": start,
+            "end_location_place_id": end,
+            "radius": radius
+        }
+        return SearchRideController(data, self.serializer_class).process()
