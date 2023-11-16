@@ -10,6 +10,7 @@ from ride.views import RidesArchiveView
 from ride.views import RidesView
 from ride.views import RideView
 from ride.views import SearchView
+from ride.views import RecentView
 from rest_framework_swagger.views import get_swagger_view
 
 schema_view = get_swagger_view(title='Pastebin API')
@@ -22,6 +23,8 @@ urlpatterns = [
     path("unblock/", UnblockView.as_view(), name="unblock"),
     path("rides/<int:id>/", RideView.as_view(), name="ride"),
     path("rides/", RidesView.as_view(), name="rides"),
+    path("rides/archive/", RidesArchiveView.as_view(), name="rides"),
+    path("recent/", RecentView.as_view(), name="recent"),
     path("search/time/<str:time>/start/<str:start>/end/<str:end>/radius/<int:radius>/", SearchView.as_view(), name="search"),
     re_path(r"^requests/", include("request.urls")),
     re_path(r"^prompts/", include("prompts.urls"))

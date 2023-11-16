@@ -18,6 +18,7 @@ class SimpleRideSerializer(serializers.ModelSerializer):
             "driver",
             "min_travelers",
             "max_travelers",
+            "num_riders",
             "path",
             "ride_type",
         )
