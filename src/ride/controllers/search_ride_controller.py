@@ -37,6 +37,7 @@ class SearchRideController:
             all_rides = Ride.objects.filter(
                 departure_datetime__gte=departure_last_week,
                 departure_datetime__lte=departure_next_week,
+                departure_datetime__gt=timezone.now()
             )
 
             # Sort results based on time proximity
@@ -94,6 +95,7 @@ class SearchRideController:
                 
                 all_rides = Ride.objects.filter(
                     path__in=paths,
+                    departure_datetime__gt=timezone.now()
                 )
 
                 # Sort results based on location
@@ -117,6 +119,7 @@ class SearchRideController:
                 
                 all_rides = Ride.objects.filter(
                     path__in=paths,
+                    departure_datetime__gt=timezone.now()
                 )
 
                 # Sort results based on location
@@ -141,6 +144,7 @@ class SearchRideController:
                     path__in=paths,
                     departure_datetime__gte=departure_last_week,
                     departure_datetime__lte=departure_next_week,
+                    departure_datetime__gt=timezone.now()
                 )
 
                 # Sort results based on location and time proximity
@@ -167,6 +171,7 @@ class SearchRideController:
                     path__in=paths,
                     departure_datetime__gte=departure_last_week,
                     departure_datetime__lte=departure_next_week,
+                    departure_datetime__gt=timezone.now()
                 )
 
                 # Sort results based on location and time proximity
@@ -193,6 +198,7 @@ class SearchRideController:
 
                 all_rides = Ride.objects.filter(
                     path__in=paths,
+                    departure_datetime__gt=timezone.now()
                 )
 
                 # Sort results based on location
@@ -223,6 +229,7 @@ class SearchRideController:
                     path__in=paths,
                     departure_datetime__gte=departure_last_week,
                     departure_datetime__lte=departure_next_week,
+                    departure_datetime__gt=timezone.now()
                 )
 
                 # Sort results based on location and time proximity
