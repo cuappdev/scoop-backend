@@ -10,9 +10,11 @@ from django.utils import timezone
 from .controllers.create_ride_controller import CreateRideController
 from .controllers.search_ride_controller import SearchRideController
 from .controllers.update_ride_controller import UpdateRideController
+from .controllers.recent_rides_controller import RecentRidesController
 from ride.utils import MultipleFieldLookupMixin
 from .models import Ride
 from .serializers import RideSerializer
+from .simple_serializers import SimpleRideSerializer
 
 
 class RidesView(generics.GenericAPIView):
@@ -20,9 +22,9 @@ class RidesView(generics.GenericAPIView):
     permission_classes = api_settings.CONSUMER_PERMISSIONS
 
     def get(self, request):
-        """Get all rides in the future."""
+        """Get all rides in the future from unblocked users."""
         return success_response(
-            self.serializer_class(Ride.objects.filter(departure_datetime__gt=timezone.now()), many=True).data
+            self.serializer_class(Ride.objects.filter(departure_datetime__gt=timezone.now()).exclude(creator__in=blocked_users), many=True).data
         )
 
     def post(self, request):
@@ -87,3 +89,11 @@ class SearchView(MultipleFieldLookupMixin, generics.RetrieveAPIView):
             "radius": radius
         }
         return SearchRideController(data, self.serializer_class).process()
+
+      
+class RecentView(generics.GenericAPIView):
+    serializer_class = SimpleRideSerializer
+
+    def get(self, request):
+        """Get recent rides."""
+        return RecentRidesController(self.serializer_class).process()

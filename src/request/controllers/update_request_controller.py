@@ -31,6 +31,8 @@ class UpdateRequestController:
         if approved:
             ride = Ride.objects.get(id=request.ride.id)
             rider_ids = [request.approvee.id]
+            num_riders = ride.num_riders + 1
+            ride.num_riders.set(num_riders)
             if len(ride.riders.all()) > 0:
                 past_riders = [rider.id for rider in ride.riders.all()]
                 rider_ids += past_riders

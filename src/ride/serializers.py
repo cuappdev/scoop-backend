@@ -23,6 +23,7 @@ class RideSerializer(serializers.ModelSerializer):
             "driver",
             "is_flexible",
             "riders",
+            "num_riders",
             "estimated_cost",
             "path",
             "ride_type",
