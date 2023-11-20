@@ -14,3 +14,6 @@ class Person(models.Model):
     pronouns = models.CharField(max_length=20, default=None, null=True)
     prompt_questions = models.ManyToManyField(Prompt, default=None, blank=True)
     prompt_answers = models.TextField(default=None, null=True)
+    blocked_users = models.ManyToManyField(
+        "self", default=None, blank=True, symmetrical=False
+    )
