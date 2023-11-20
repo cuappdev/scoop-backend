@@ -78,7 +78,7 @@ class SearchView(MultipleFieldLookupMixin, generics.RetrieveAPIView):
     serializer_class = RideSerializer
     lookup_fields = ['time', 'start', 'end', 'radius']
 
-    def get(self, request, time=None, start=None, end=None, radius=0):
+    def get(self, request, time=None, start=None, end=None, radius=1):
         """Search for a ride."""
         data = {
             "departure_datetime": time,
