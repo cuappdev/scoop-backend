@@ -73,6 +73,7 @@ class SearchRideController:
             path__in=paths,
             departure_datetime__gte=departure_last_week,
             departure_datetime__lte=departure_next_week,
+            archived=False
         ).exclude(driver__in=self._request.user.blocked_users.all())  # removing blocked user rides
 
         # Sort results based on location and time proximity

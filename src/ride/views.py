@@ -24,7 +24,7 @@ class RidesView(generics.GenericAPIView):
     def get(self, request):
         """Get all rides in the future from unblocked users."""
         return success_response(
-            self.serializer_class(Ride.objects.filter(departure_datetime__gt=timezone.now()).exclude(creator__in=blocked_users), many=True).data
+            self.serializer_class(Ride.objects.filter(departure_datetime__gt=timezone.now(), archived=False).exclude(creator__in=blocked_users), many=True).data
         )
 
     def post(self, request):
@@ -56,6 +56,8 @@ class RideView(generics.GenericAPIView):
         if not Ride.objects.filter(id=id).exists():
             return failure_response("Ride does not exist")
         ride = Ride.objects.get(id=id)
+        if ride.archived:
+            return failure_response("Ride does not exist")
         return success_response(self.serializer_class(ride).data, status.HTTP_200_OK)
 
     def post(self, request, id):
@@ -71,7 +73,8 @@ class RideView(generics.GenericAPIView):
         if not Ride.objects.filter(id=id).exists():
             return failure_response("Ride does not exist")
         ride = Ride.objects.get(id=id)
-        ride.delete()
+        ride.archived = True
+        ride.save()
         return success_response("Ride deleted", status.HTTP_200_OK)
 
 
