@@ -9,6 +9,7 @@ from rest_framework import status
 from .controllers.authenticate_controller import AuthenticateController
 from .controllers.developer_controller import DeveloperController
 from .controllers.update_controller import UpdatePersonController
+from .controllers.block_controller import BlockController, UnblockController
 from .serializers import AuthenticateSerializer
 from .serializers import UserSerializer
 
@@ -24,6 +25,43 @@ class AuthenticateView(generics.GenericAPIView):
         except json.JSONDecodeError:
             data = request.data
         return AuthenticateController(request, data, self.serializer_class).process()
+
+
+class BlockView(generics.GenericAPIView):
+    serializer_class = UserSerializer
+    permission_classes = api_settings.CONSUMER_PERMISSIONS
+
+    def get(self, request):
+        """Get blocked users for current authenticated user."""
+        return success_response(
+            self.serializer_class(map(lambda p: p.user, request.user.person.blocked_users.all()), many=True).data,
+            status.HTTP_200_OK,
+        )
+
+    def post(self, request):
+        """Block a user."""
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            data = request.data
+        return BlockController(
+            request.user, data, self.serializer_class
+        ).process()
+
+
+class UnblockView(generics.GenericAPIView):
+    serializer_class = UserSerializer
+    permission_classes = api_settings.CONSUMER_PERMISSIONS
+
+    def post(self, request):
+        """Unblock a user."""
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            data = request.data
+        return UnblockController(
+            request.user, data, self.serializer_class
+        ).process()
 
 
 class MeView(generics.GenericAPIView):
