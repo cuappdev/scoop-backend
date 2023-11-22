@@ -1,4 +1,5 @@
 import json
+import os
 
 from api.utils import failure_response
 from api.utils import success_response
@@ -11,10 +12,11 @@ from ..utils import upload_profile_pic
 
 
 class UpdatePersonController:
-    def __init__(self, user, data, serializer):
+    def __init__(self, user, data, profile_pic, serializer):
         self._data = data
         self._serializer = serializer
         self._user = user
+        self._profile_pic = profile_pic
         self._person = self._user.person
 
     def process(self):
@@ -23,7 +25,6 @@ class UpdatePersonController:
         last_name = self._data.get("last_name")
         grade = self._data.get("grade")
         phone_number = self._data.get("phone_number")
-        profile_pic_base64 = self._data.get("profile_pic_base64")
         prompts = self._data.get("prompts")
         pronouns = self._data.get("pronouns")
 
@@ -54,10 +55,11 @@ class UpdatePersonController:
         self._user.save()
         self._person.save()
 
-        if profile_pic_base64 == "":
+        if not self._profile_pic:
             remove_profile_pic(self._user.id)
-        elif profile_pic_base64 is not None:
-            upload_profile_pic(self._user.id, profile_pic_base64)
+        else:
+            remove_profile_pic(self._user.id)
+            upload_profile_pic(self._user.id, os.environ.get("IMAGE_BUCKET_NAME"), self._profile_pic)
 
         self._user = User.objects.get(id=self._user.id)
         return success_response(self._serializer(self._user).data)

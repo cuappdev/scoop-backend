@@ -4,13 +4,11 @@ from django.contrib.auth.models import User
 import requests
 
 
-def upload_profile_pic(user_id, profile_pic_base64):
-    """Uploads image to server and modifies user's profile_pic_url"""
-    request_body = {
-        "bucket": IMAGE_BUCKET_NAME,
-        "image": profile_pic_base64,
-    }
-    response = requests.post(IMAGE_UPLOAD_URL + "upload/", json=request_body)
+def upload_profile_pic(user_id, bucket, image_file):
+    """Uploads image to server and modifies user's profile_pic_url. Uses form data instead of JSON body."""
+    data = { "bucket": bucket }
+    files = { "image": image_file }
+    response = requests.post(IMAGE_UPLOAD_URL + "upload/", files=files, data=data)
     if response.status_code != 201:
         return
     user = User.objects.get(id=user_id)
@@ -18,6 +16,7 @@ def upload_profile_pic(user_id, profile_pic_base64):
     # if there is already a profile picture, delete old one to free up space on server
     if person.profile_pic_url:
         remove_profile_pic(user_id)
+    print(response.json())
     person.profile_pic_url = response.json().get("data")
     user.save()
     person.save()

@@ -76,12 +76,10 @@ class MeView(generics.GenericAPIView):
 
     def post(self, request):
         """Update current authenticated user."""
-        try:
-            data = json.loads(request.body)
-        except json.JSONDecodeError:
-            data = request.data
+        data = request.POST
+        profile_pic = request.FILES.get("image")
         return UpdatePersonController(
-            request.user, data, self.serializer_class
+            request.user, data, profile_pic, self.serializer_class
         ).process()
 
     def delete(self, request):
