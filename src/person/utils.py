@@ -16,7 +16,7 @@ def upload_profile_pic(user_id, bucket, image_file):
     # if there is already a profile picture, delete old one to free up space on server
     if person.profile_pic_url:
         remove_profile_pic(user_id)
-    print(response.json())
+    print(f"Upload Profile Pic: {response.json()}")
     person.profile_pic_url = response.json().get("data")
     user.save()
     person.save()
