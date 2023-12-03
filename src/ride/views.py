@@ -12,6 +12,8 @@ from .controllers.search_ride_controller import SearchRideController
 from .controllers.update_ride_controller import UpdateRideController
 from .controllers.recent_rides_controller import RecentRidesController
 from ride.utils import MultipleFieldLookupMixin
+from .controllers.price_controller import PriceController
+from rest_framework.authtoken.models import Token
 from .models import Ride
 from .serializers import RideSerializer
 from .simple_serializers import SimpleRideSerializer
@@ -25,7 +27,7 @@ class RidesView(generics.GenericAPIView):
         """Get all rides in the future from unblocked users."""
         blocked_users = request.user.person.blocked_users.all()
         return success_response(
-            self.serializer_class(Ride.objects.filter(departure_datetime__gt=timezone.now()
+            self.serializer_class(Ride.objects.filter(departure_datetime__gt=timezone.now(), archived=False
                                                       ).exclude(creator__in=blocked_users), many=True).data
         )
 
@@ -58,6 +60,8 @@ class RideView(generics.GenericAPIView):
         if not Ride.objects.filter(id=id).exists():
             return failure_response("Ride does not exist")
         ride = Ride.objects.get(id=id)
+        if ride.archived:
+            return failure_response("Ride does not exist")
         return success_response(self.serializer_class(ride).data, status.HTTP_200_OK)
 
     def post(self, request, id):
@@ -73,7 +77,8 @@ class RideView(generics.GenericAPIView):
         if not Ride.objects.filter(id=id).exists():
             return failure_response("Ride does not exist")
         ride = Ride.objects.get(id=id)
-        ride.delete()
+        ride.archived = True
+        ride.save()
         return success_response("Ride deleted", status.HTTP_200_OK)
 
 
@@ -82,15 +87,31 @@ class SearchView(MultipleFieldLookupMixin, generics.RetrieveAPIView):
     serializer_class = RideSerializer
     lookup_fields = ['time', 'start', 'end', 'radius']
 
-    def get(self, request, time, start, end, radius):
+    def get(self, request, time=None, start=None, end=None, radius=1):
         """Search for a ride."""
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            data = request.data
+
+        return SearchRideController(data, request, self.serializer_class).process()
+    
+class PriceView(generics.GenericAPIView):
+    serializer_class = RideSerializer
+    permission_classes = api_settings.CONSUMER_PERMISSIONS
+    lookup_fields = ['id', 'token']
+
+    def get(self, request, id, token):
+        """Get suggested price of a ride. Only the driver of the ride can get the value."""
+        ride = Ride.objects.get(id=id)
+        valid_token = str(Token.objects.get(user=ride.driver.user))
+        if token != valid_token:
+            return failure_response("Token doesn't match driver's token.")
         data = {
-            "departure_datetime": time,
-            "start_location_place_id": start,
-            "end_location_place_id": end,
-            "radius": radius
+            "path": ride.path
         }
-        return SearchRideController(data, self.serializer_class).process()
+
+        return PriceController(data, self.serializer_class).process()
 
 
 class RecentView(generics.GenericAPIView):
