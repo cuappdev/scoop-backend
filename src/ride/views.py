@@ -25,8 +25,10 @@ class RidesView(generics.GenericAPIView):
 
     def get(self, request):
         """Get all rides in the future from unblocked users."""
+        blocked_users = request.user.person.blocked_users.all()
         return success_response(
-            self.serializer_class(Ride.objects.filter(departure_datetime__gt=timezone.now(), archived=False).exclude(creator__in=blocked_users), many=True).data
+            self.serializer_class(Ride.objects.filter(departure_datetime__gt=timezone.now(), archived=False
+                                                      ).exclude(creator__in=blocked_users), many=True).data
         )
 
     def post(self, request):
@@ -36,7 +38,7 @@ class RidesView(generics.GenericAPIView):
         except json.JSONDecodeError:
             data = request.data
         return CreateRideController(request, data, self.serializer_class).process()
-    
+
 
 class RidesArchiveView(generics.GenericAPIView):
     serializer_class = RideSerializer
@@ -111,7 +113,7 @@ class PriceView(generics.GenericAPIView):
 
         return PriceController(data, self.serializer_class).process()
 
-      
+
 class RecentView(generics.GenericAPIView):
     serializer_class = SimpleRideSerializer
 
